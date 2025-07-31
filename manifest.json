@@ -1,0 +1,39 @@
+{
+  "manifest_version": 3,
+  "name": "eHour Git Log Auto-Fill",
+  "version": "1.0.0",
+  "description": "Automatically fill eHour timesheets from parsed git logs",
+  
+  "permissions": [
+    "activeTab",
+    "storage",
+    "scripting"
+  ],
+  
+  "host_permissions": [
+    "*://*/*"
+  ],
+  
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "eHour Auto-Fill"
+  },
+  
+  "content_scripts": [
+    {
+      "matches": ["*://*/ehour/*", "*://*/timesheet/*"],
+      "js": ["content.js"],
+      "run_at": "document_end"
+    }
+  ],
+  
+  "background": {
+    "service_worker": "background.js"
+  },
+  
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}
