@@ -1,0 +1,177 @@
+2025-08-01: MKIS-1003 Invitation Producer flow: fix buttons  - fix buttons, and theme color init;
+2025-08-01: MKIS-1003 Invitation Producer flow: fix buttons  - fix buttons, and theme color init;
+2025-08-01: Merge branch 'MKIS-1003-Invitation-Producer-flow-fix-buttons' into 'develop'
+2025-08-01: MKIS-1003 Invitation Producer flow: fix buttons  - main container - remove gap;
+2025-08-01: Merge branch 'MKIS-1003-Invitation-Producer-flow-fix-buttons' into 'develop'
+2025-08-04: MKIS-1013 Resetting the count of MDS in columns after refreshing the page  - then loaded MDS edit with one column, close should force other two columns to load items;
+2025-08-04: MKIS-957 PrimeVue migration: migrate input component  - Create input component wrap;  - required * on FloatLabel;
+2025-08-05: MKIS-957 PrimeVue migration: migrate input component  - inputText and Textarea: errors trigger invalid attr; required * support and stories update;
+2025-08-05: MKIS-957 PrimeVue migration: migrate input component  - update textarea, input usage on MDS;
+2025-08-05: Merge branch 'MKIS-957-PrimeVue-migration-input-component' into 'develop'
+2025-08-05: MKIS-957 PrimeVue migration: migrate input component  - revert usage on MDS;
+2025-08-05: Merge branch 'MKIS-957-PrimeVue-migration-input-component' into 'develop'
+2025-08-05: MKIS-957 PrimeVue migration: migrate input component  - use legacy label instead of prime FluidLabel;
+2025-08-05: Merge branch 'MKIS-957-PrimeVue-migration-input-component' into 'develop'
+2025-08-05: MKIS-957 PrimeVue migration: migrate input component  - fix warnings
+2025-08-05: Merge branch 'MKIS-957-PrimeVue-migration-input-component' into 'develop'
+2025-08-06: MKIS-957 PrimeVue migration: migrate input component  - added: input info component;
+2025-08-06: MKIS-957 PrimeVue migration: migrate input component  - update input usages in other places in MDS;
+2025-08-06: Merge branch 'MKIS-957-PrimeVue-migration-input-component' into 'develop'
+2025-08-06: MKIS-1007 Fix page leave dialog
+2025-08-06: Merge branch 'MKIS-1007-Fix-page-leave-confirmation' into 'develop'
+2025-08-07: MKIS-1032 PrimeVue migration: Label for inputs  - for html label FixedLabel wrapper component created, with prime vue css var tokens;  - placed FixedLabel in InputText, Textarea, DatePicker, Switch components;
+2025-08-07: MKIS-1032 PrimeVue migration: Label for inputs  - fix switch classes
+2025-08-07: MKIS-1032 PrimeVue migration: Label for inputs  - fix label semantic;
+2025-08-07: MKIS-1032 PrimeVue migration: Label for inputs  - fix label vertical align center;
+2025-08-08: Merge branch 'develop' into MKIS-1032-PrimeVue-migration-Label-for-inputs
+2025-08-08: MKIS-1032 PrimeVue migration: Label for inputs  - tooltip removed;  - use as wrapper approach removed;  - stories updated accordingly;  - FloatLabel: added styling and --p-* variables;
+2025-08-08: MKIS-1032 PrimeVue migration: Label for inputs  - tooltip removed;  - use as wrapper approach removed;  - stories updated accordingly;  - FloatLabel: added styling and --p-* variables;
+2025-08-08: MKIS-1032 PrimeVue migration: Label for inputs  - create composable for extracting calculated properties useComputedProperties;
+2025-08-08: MKIS-1032 PrimeVue migration: Label for inputs  - removed forValue
+2025-08-09: MKIS-1032 PrimeVue migration: Label for inputs  - rename Label (based on VLabel) -> LegacyLabel;
+2025-08-09: MKIS-1032 PrimeVue migration: Label for inputs  - rename FixedLabel -> Label;
+2025-08-09: MKIS-1032 PrimeVue migration: Label for inputs  - Select: replaced FloatLabel with Label;  - removed FloatLabel wrapper;
+2025-08-09: MKIS-1032 PrimeVue migration: Label for inputs  - Select: removed padding top;
+2025-08-09: MKIS-1032 PrimeVue migration: Label for inputs  - Datepicker: min-width: 100%;
+2025-08-11: ui-kit: scroll
+2025-08-11: ui-kit: scroll
+2025-08-11: ui-kit: scroll
+2025-08-11: ui-kit: scroll
+2025-08-11: Merge branch 'ui-kit-scroll' into 'develop'
+2025-08-11: MKIS-1063 Fix the Title on the MDS creation modal  - remove mdsType initial value;
+2025-08-11: MKIS-1063 Fix the Title on the MDS creation modal  - Dialog stories refactor;
+2025-08-11: MKIS-1063 Fix the Title on the MDS creation modal  - on close set mdsType to null;
+2025-08-11: Merge branch 'develop' into MKIS-1063-Fix-the-Title-on-the-MDS-creation-modal
+2025-08-11: MKIS-1063 Fix the Title on the MDS creation modal  - story: use inputs, remove unused styling;
+2025-08-11: MKIS-1069 Invitation Producer Flow: fix button display on forms  - override Menubar mobile classes to disable 'hamburger' menu; (not found official way to disable mobile view);   - removed severity 'warn' from 'more' button;
+2025-08-11: MKIS-1069 Invitation Producer Flow: fix button display on forms  - confirmation showing fix (form invalid initially);
+2025-08-11: MKIS-1069 Invitation Producer Flow: fix button display on forms  - confirmation showing fix (form invalid initially);
+2025-08-11: MKIS-1069 Invitation Producer Flow: fix button display on forms  - confirmation showing fix (form invalid initially);
+2025-08-11: Merge branch 'MKIS-1069-Invitation-Producer-Flow-fix-button-display-on-forms' into 'develop'
+2025-08-12: MKIS-1063 Fix the Title on the MDS creation modal  - clear selected mdsType on dialog unmount;
+2025-08-12: MKIS-1063 Fix the Title on the MDS creation modal  - clear selected mdsType on dialog unmount;
+2025-08-12: Merge branch 'MKIS-1063-Fix-the-Title-on-the-MDS-creation-modal' into 'develop'
+2025-08-12: schema update: mediaProviderNotes
+2025-08-12: Merge branch 'schema-update' into 'develop'
+2025-08-12: MKIS-1063 Fix the Title on the MDS creation modal  - output test attributes for Dialog opened with dialogService;
+2025-08-12: Merge branch 'MKIS-1063-Fix-the-Title-on-the-MDS-creation-modal' into 'develop'
+2025-08-12: shema update: generated types
+2025-08-12: Merge branch 'generated-graphql' into 'develop'
+2025-08-12: MKIS-1032 PrimeVue migration: Label for inputs  - label with 'for' by id or name and related layout changes;
+2025-08-13: MKIS-961 LMZ Flow :: AI annotations suggestions  - switch: added 'magic' variant (for AI suggestions);
+2025-08-13: MKIS-961 LMZ Flow :: AI annotations suggestions  - switch: use primeVue styling way scoped tokens instead of css :deep();  - place: ai switcher on profile page;
+2025-08-13: Merge branch 'develop' into MKIS-1032-PrimeVue-migration-Label-for-inputs
+2025-08-13: Merge branch 'develop' into MKIS-961-2-LMZ-Flow-AI-annotations-suggestions
+2025-08-13: MKIS-1032 PrimeVue migration: Label for inputs  - 'labelId' -> 'id' renamed;  - composable for id with fallback to name;
+2025-08-13: Merge branch 'MKIS-1070---FE-MDS-static-file-duplicates-check-after-file-attachment' into 'develop'
+2025-08-14: MKIS-961 LMZ Flow :: AI annotations suggestions  - switch/label - magic variant;
+2025-08-14: MKIS-1032 PrimeVue migration: Label for inputs  - fixes
+2025-08-14: MKIS-1032 PrimeVue migration: Label for inputs  - slot for label text value
+2025-08-14: MKIS-1032 PrimeVue migration: Label for inputs  - slot for label text value
+2025-08-14: Merge branch 'MKIS-1032-PrimeVue-migration-Label-for-inputs' into 'develop'
+2025-08-14: Merge branch 'develop' into MKIS-961-2-LMZ-Flow-AI-annotations-suggestions
+2025-08-14: MKIS-1032 PrimeVue migration: Label for inputs  - label 'magic' variant
+2025-08-14: fix dictionary item load
+2025-08-14: Merge branch 'fix-dictionary-item' into 'develop'
+2025-08-14: MKIS-1123 Remove confirmation submit action when account form is invalid
+2025-08-15: MKIS-961 LMZ Flow :: AI annotations suggestions  - switch/label - magic variant replaced with severity and design tokens approach;
+2025-08-15: MKIS-961 LMZ Flow :: AI annotations suggestions  - revert ai switch on profile
+2025-08-15: Merge branch 'develop' into MKIS-961-2-LMZ-Flow-AI-annotations-suggestions
+2025-08-15: MKIS-961 LMZ Flow :: AI annotations suggestions  - cleanup
+2025-08-15: MKIS-961 LMZ Flow :: AI annotations suggestions  - cleanup
+2025-08-16: Merge branch 'refs/heads/develop' into MKIS-961-2-LMZ-Flow-AI-annotations-suggestions
+2025-08-16: MKIS-961 LMZ Flow :: AI annotations suggestions  - severity design tokens for label and switch;
+2025-08-18: MKIS-961 LMZ Flow :: AI annotations suggestions  - remove constants, use dt in theme instead
+2025-08-18: MKIS-961 LMZ Flow :: AI annotations suggestions  - Switch: simplify severity handling
+2025-08-18: MKIS-961 LMZ Flow :: AI annotations suggestions  - Label: simplify severity handling
+2025-08-18: Merge branch 'MKIS-767-Search-and-Sorting-options-for-the-dictionary-items' into 'develop'
+2025-08-18: MKIS-961 LMZ Flow :: AI annotations suggestions  - Switch: typings
+2025-08-18: MKIS-961 LMZ Flow :: AI annotations suggestions  - Switch: typings
+2025-08-18: MKIS-961 LMZ Flow :: AI annotations suggestions  - Label: slot
+2025-08-18: MKIS-961 LMZ Flow :: AI annotations suggestions  - Label: slot
+2025-08-18: MKIS-961 LMZ Flow :: AI annotations suggestions  - Switch pt and dt )
+2025-08-18: MKIS-961 LMZ Flow :: AI annotations suggestions  - from Severity type extracted SeverityMagic to separate type;
+2025-08-18: MKIS-961 LMZ Flow :: AI annotations suggestions  - from Severity type extracted SeverityMagic to separate type;
+2025-08-18: MKIS-961 LMZ Flow :: AI annotations suggestions  - from Severity type extracted SeverityMagic to separate type;
+2025-08-18: Merge branch 'MKIS-961-2-LMZ-Flow-AI-annotations-suggestions' into 'develop'
+2025-08-18: MKIS-1068 Fix the MDS input behavior  - fix input border on browser autocomplete;
+2025-08-18: Merge branch 'MKIS-1068-Fix-the-MDS-input-behavior' into 'develop'
+2025-08-19: MKIS-1060 FE: save ai toggle state in User Profile  - MDS form: place ai switcher;
+2025-08-19: MKIS-1060 FE: save ai toggle state in User Profile  - MDS form: place ai switcher;
+2025-08-19: Dictionary UsageRights: fix details view;
+2025-08-19: Merge branch 'usageRights-fix-details-view' into 'develop'
+2025-08-20: Merge branch 'MKIS-1131-Create-component-to-replace-legacy-ContextMenu-component' into 'develop'
+2025-08-20: Merge branch 'develop' into MKIS-978-PrimeVue-migration-datatable
+2025-08-20: MKIS-978 PrimeVue migration: datatable  - update wrapper component and stories
+2025-08-20: MKIS-978 PrimeVue migration: datatable  - data-table defaults; column styles;
+2025-08-20: MKIS-978 PrimeVue migration: datatable  - row click - prevent select;
+2025-08-20: MKIS-978 PrimeVue migration: datatable  - row click - prevent select;
+2025-08-20: MKIS-978 PrimeVue migration: datatable  - clen-up readme
+2025-08-21: MKIS-978 PrimeVue migration: datatable  - fixed DataTable search; typings;
+2025-08-21: MKIS-978 PrimeVue migration: datatable  - DataTable use v-bind for tableAttributes
+2025-08-21: MKIS-978 PrimeVue migration: datatable  - cleanup
+2025-08-21: Merge branch 'develop' into MKIS-978-PrimeVue-migration-datatable
+2025-08-21: MKIS-1032 Add comprehensive documentation for InputNumber and InputText components.
+2025-08-21: Merge branch 'MKIS-1032-PrimeVue-migration-add-readme' into 'develop'
+2025-08-21: MKIS-978 PrimeVue migration: datatable  - cleanup
+2025-08-21: MKIS-978 PrimeVue migration: datatable  - add default 'no data' message
+2025-08-22: MKIS-978 PrimeVue migration: datatable  - icon w/o 'pi-' prefix;  - id is mandatory;  - use MenuButton component;
+2025-08-23: MKIS-978 PrimeVue migration: datatable  - selectionMode: use only on column to avoid whole row click toggle row selection;
+2025-08-25: MKIS-1111-Renamed scope and related role names: FE update
+2025-08-25: Merge branch 'schema-and-package-updates' into 'develop'
+2025-08-25: Remove 'hideDetails' obsolete prop
+2025-08-25: Merge branch 'switch-remove-hideDetails' into 'develop'
+2025-08-25: MKIS-1111-Renamed scope and related role names  - mediaLibrary to userManagement scope/role updates;
+2025-08-25: Merge branch 'develop' into MKIS-978-PrimeVue-migration-datatable
+2025-08-25: MKIS-978 PrimeVue migration: datatable  - handle paginator text as in legacy component;
+2025-08-25: Merge branch 'MKIS-1141-PrimeVue-migration-Message-component' into 'develop'
+2025-08-25: MKIS-978 PrimeVue migration: datatable  - headers param removed;
+2025-08-25: MKIS-1141 PrimeVue migration: Message component  - fix duplication on switch stories;
+2025-08-25: MKIS-1111-Renamed scope and related role names  - KMZ role translation added;
+2025-08-25: Merge branch 'MKIS-1111-Renamed-scope' into 'develop'
+2025-08-25: MKIS-1141 PrimeVue migration: Message component  - replace legacy 'Banner' with Message;
+2025-08-25: Merge branch 'refs/heads/develop' into MKIS-978-PrimeVue-migration-datatable
+2025-08-25: MKIS-1141 PrimeVue migration: Message component  - icon by Severity
+2025-08-26: MKIS-1141 PrimeVue migration: Message component  - remove icons where severity defined
+2025-08-26: Merge branch 'MKIS-1141-PrimeVue-migration-Message-component' into 'develop'
+2025-08-26: MKIS-1111-Renamed scope and related role names  - return "mediaLibrary": "Mediathek" menu group;
+2025-08-26: Merge branch 'MKIS-1111-Renamed-scope-and-related-role-names' into 'develop'
+2025-08-26: Merge branch 'develop' into MKIS-978-PrimeVue-migration-datatable
+2025-08-26: MKIS-978 PrimeVue migration: datatable  - move columns from template to config array;
+2025-08-26: Merge branch 'MKIS-1161-PrimeVue-migration-InputPassword-component' into 'develop'
+2025-08-26: MKIS-978 PrimeVue migration: datatable  - move columns styles;
+2025-08-26: MKIS-978 PrimeVue migration: datatable  - restore account email column;
+2025-08-26: Merge branch 'MKIS-978-PrimeVue-migration-datatable-fixes' into 'develop'
+2025-08-26: Merge branch 'MKIS-1074-Provider-Admin-Creation---Successful-flow' into 'develop'
+2025-08-26: MKIS-1165 PrimeVue datatable - tech debt fixes  - 'nothing found' message/distance  - filters are not working in the Organization management;
+2025-08-26: Merge branch 'MKIS-978-PrimeVue-migration-datatable-fixes' into 'develop'
+2025-08-26: MKIS-1165 PrimeVue datatable - tech debt fixes  - organizations table: use Column component for other text columns;
+2025-08-26: MKIS-1165 PrimeVue datatable - tech debt fixes  - organizations table: migrate to MenuItem;
+2025-08-26: MKIS-1165 PrimeVue datatable - tech debt fixes  - organizations table: added ActionsCell.vue;
+2025-08-26: MKIS-1165 PrimeVue datatable - tech debt fixes  - accounts table: use TextCell.vue;
+2025-08-26: MKIS-1165 PrimeVue datatable - tech debt fixes  - move TextCell, ActionsCell to ui-components;
+2025-08-26: MKIS-1165 PrimeVue datatable - tech debt fixes  - use getObjectValue
+2025-08-26: MKIS-1165 PrimeVue datatable - tech debt fixes  - fix typing
+2025-08-26: MKIS-1165 PrimeVue datatable - tech debt fixes  - account table: name with class
+2025-08-27: MKIS-1165 PrimeVue datatable - tech debt fixes  - account table: added ChipsCell
+2025-08-27: MKIS-1165 PrimeVue datatable - tech debt fixes  - account table: status column icon;
+2025-08-27: MKIS-1165 PrimeVue datatable - tech debt fixes  - account table: added ChipsCell
+2025-08-27: MKIS-1165 PrimeVue datatable - tech debt fixes  - organizations table: added ActionsCell.vue;
+2025-08-27: Merge branch 'MKIS-1158-Update-Keycloak-teplate-for-v26' into 'develop'
+2025-08-27: MKIS-1165 PrimeVue datatable - tech debt fixes  - accessor fixes in cell components
+2025-08-27: Merge branch 'develop' into MKIS-978-PrimeVue-migration-datatable-additional
+2025-08-27: MKIS-1176 PrimeVue datatable - Improvements  - displaying 50 and 100 items per page when going to the last page of the organization list;
+2025-08-27: Merge branch 'MKIS-1176-PrimeVue-datatable-Improvements' into 'develop'
+2025-08-28: MKIS-1176 PrimeVue datatable - Improvements  - DataTableQuery
+2025-08-28: MKIS-1176 PrimeVue datatable - Improvements  - fix attrs reactivity
+2025-08-28: MKIS-1176 PrimeVue datatable - Improvements  - remove reduntant emits
+2025-08-28: MKIS-1176 PrimeVue datatable - Improvements  - maintain sort on page change
+2025-08-28: MKIS-1176 PrimeVue datatable - Improvements  - refresh table
+2025-08-28: MKIS-1176 PrimeVue datatable - Improvements  - DataTableQuery: use on organizations;
+2025-08-28: Merge branch 'develop' into MKIS-1176-PrimeVue-datatable-Improvements
+2025-08-28: MKIS-1176 PrimeVue datatable - Improvements  - organization search and typings;
+2025-08-28: MKIS-1176 PrimeVue datatable - Improvements  - typings;
+2025-08-28: MKIS-1176 PrimeVue datatable - Improvements  - attrs handling fix
+2025-08-28: Merge branch 'MKIS-1176-PrimeVue-datatable-Improvements' into 'develop'
+2025-08-30: MKIS-1176 PrimeVue datatable - Improvements  - accounts resolver and use in DataTableQuery
+2025-08-30: MKIS-1176 PrimeVue datatable - Improvements  - sub organizations resolver and use in DataTableQuery

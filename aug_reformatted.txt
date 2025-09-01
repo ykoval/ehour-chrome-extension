@@ -1,0 +1,215 @@
+## 2025-08-01
+[8] MKIS-1003: Invitation Producer flow: fix buttons
+  - fix buttons, and theme color init
+  - main container
+  - remove gap
+
+## 2025-08-04
+[8] MKIS-1013: Resetting the count of MDS in columns after refreshing the page
+  - then loaded MDS edit with one column, close should force other two columns to load items
+MKIS-957 PrimeVue migration: migrate input component
+  - Create input component wrap
+  - required * on FloatLabel
+
+## 2025-08-05
+[8] MKIS-957: PrimeVue migration: migrate input component
+  - inputText and Textarea: errors trigger invalid attr; required * support and stories update
+  - update textarea, input usage on MDS
+  - revert usage on MDS
+  - use legacy label instead of prime FluidLabel
+  - fix warnings
+
+## 2025-08-06
+[8] MKIS-1007: Fix page leave dialog
+MKIS-957 PrimeVue migration: migrate input component
+  - added: input info component
+  - update input usages in other places in MDS
+
+## 2025-08-07
+[8] MKIS-1032: PrimeVue migration: Label for inputs
+  - for html label FixedLabel wrapper component created, with prime vue css var tokens
+  - placed FixedLabel in InputText, Textarea, DatePicker, Switch components
+  - fix switch classes
+  - fix label semantic
+  - fix label vertical align center
+
+## 2025-08-08
+[8] MKIS-1032: PrimeVue migration: Label for inputs
+  - tooltip removed
+  - use as wrapper approach removed
+  - stories updated accordingly
+  - FloatLabel: added styling and --p-* variables
+  - create composable for extracting calculated properties useComputedProperties
+  - removed forValue
+
+## 2025-08-09
+[8] MKIS-1032: PrimeVue migration: Label for inputs
+  - rename Label (based on VLabel) -> LegacyLabel
+  - rename FixedLabel -> Label
+  - Select: replaced FloatLabel with Label
+  - removed FloatLabel wrapper
+  - Select: removed padding top
+  - Datepicker: min-width: 100%
+
+## 2025-08-11
+[8] MKIS-1063: Fix the Title on the MDS creation modal
+  - ui-kit: scroll
+  - ui-kit: scroll
+  - ui-kit: scroll
+  - ui-kit: scroll
+  - remove mdsType initial value
+  - Dialog stories refactor
+  - on close set mdsType to null
+  - story: use inputs, remove unused styling
+MKIS-1069 Invitation Producer Flow: fix button display on forms
+  - override Menubar mobile classes to disable 'hamburger' menu; (not found official way to disable mobile view)
+  - removed severity 'warn' from 'more' button
+  - confirmation showing fix (form invalid initially)
+
+## 2025-08-12
+[8] MKIS-1032: PrimeVue migration: Label for inputs
+  - schema update: mediaProviderNotes
+  - shema update: generated types
+  - label with 'for' by id or name and related layout changes
+MKIS-1063 Fix the Title on the MDS creation modal
+  - clear selected mdsType on dialog unmount
+  - output test attributes for Dialog opened with dialogService
+
+## 2025-08-13
+[8] MKIS-1032: PrimeVue migration: Label for inputs
+  - 'labelId' -> 'id' renamed
+  - composable for id with fallback to name
+MKIS-961 LMZ Flow :: AI annotations suggestions
+  - switch: added 'magic' variant (for AI suggestions)
+  - switch: use primeVue styling way scoped tokens instead of css :deep()
+  - place: ai switcher on profile page
+
+## 2025-08-14
+[8] MKIS-1032: PrimeVue migration: Label for inputs
+  - fix dictionary item load
+  - fixes
+  - slot for label text value
+  - label 'magic' variant
+MKIS-1123 Remove confirmation submit action when account form is invalid
+MKIS-961 LMZ Flow :: AI annotations suggestions
+  - switch/label
+  - magic variant
+
+## 2025-08-15
+[8] MKIS-961: LMZ Flow :: AI annotations suggestions
+  - switch/label
+  - magic variant replaced with severity and design tokens approach
+  - revert ai switch on profile
+  - cleanup
+
+## 2025-08-16
+[8] MKIS-961: LMZ Flow :: AI annotations suggestions
+  - severity design tokens for label and switch
+
+## 2025-08-18
+[8] MKIS-1068: Fix the MDS input behavior
+  - fix input border on browser autocomplete
+MKIS-961 LMZ Flow :: AI annotations suggestions
+  - remove constants, use dt in theme instead
+  - Switch: simplify severity handling
+  - Label: simplify severity handling
+  - Switch: typings
+  - Label: slot
+  - Switch pt and dt )
+  - from Severity type extracted SeverityMagic to separate type
+
+## 2025-08-19
+[8] MKIS-1060: FE: save ai toggle state in User Profile
+  - Dictionary UsageRights: fix details view;
+  - MDS form: place ai switcher
+
+## 2025-08-20
+[8] MKIS-978: PrimeVue migration: datatable
+  - update wrapper component and stories
+  - data-table defaults; column styles
+  - row click
+  - prevent select
+  - clen-up readme
+
+## 2025-08-21
+[8] MKIS-1032: Add comprehensive documentation for InputNumber and InputText components.
+MKIS-978 PrimeVue migration: datatable
+  - fixed DataTable search; typings
+  - DataTable use v-bind for tableAttributes
+  - cleanup
+  - add default 'no data' message
+
+## 2025-08-22
+[8] MKIS-978: PrimeVue migration: datatable
+  - icon w/o 'pi-' prefix
+  - id is mandatory
+  - use MenuButton component
+
+## 2025-08-23
+[8] MKIS-978: PrimeVue migration: datatable
+  - selectionMode: use only on column to avoid whole row click toggle row selection
+
+## 2025-08-25
+[8] MKIS-1111: scope and related role names: FE update
+  - Remove 'hideDetails' obsolete prop
+  - mediaLibrary to userManagement scope/role updates
+  - KMZ role translation added
+MKIS-1141 PrimeVue migration: Message component
+  - fix duplication on switch stories
+  - replace legacy 'Banner' with Message
+  - icon by Severity
+MKIS-978 PrimeVue migration: datatable
+  - handle paginator text as in legacy component
+  - headers param removed
+
+## 2025-08-26
+[8] MKIS-1111: scope and related role names
+  - return "mediaLibrary": "Mediathek" menu group
+MKIS-1141 PrimeVue migration: Message component
+  - remove icons where severity defined
+MKIS-1165 PrimeVue datatable
+  - tech debt fixes
+  - 'nothing found' message/distance
+  - filters are not working in the Organization management
+  - organizations table: use Column component for other text columns
+  - organizations table: migrate to MenuItem
+  - organizations table: added ActionsCell.vue
+  - accounts table: use TextCell.vue
+  - move TextCell, ActionsCell to ui-components
+  - use getObjectValue
+  - fix typing
+  - account table: name with class
+MKIS-978 PrimeVue migration: datatable
+  - move columns from template to config array
+  - move columns styles
+  - restore account email column
+
+## 2025-08-27
+[8] MKIS-1165: PrimeVue datatable
+  - tech debt fixes
+  - account table: added ChipsCell
+  - account table: status column icon
+  - organizations table: added ActionsCell.vue
+  - accessor fixes in cell components
+MKIS-1176 PrimeVue datatable
+  - Improvements
+  - displaying 50 and 100 items per page when going to the last page of the organization list
+
+## 2025-08-28
+[8] MKIS-1176: PrimeVue datatable
+  - Improvements
+  - DataTableQuery
+  - fix attrs reactivity
+  - remove reduntant emits
+  - maintain sort on page change
+  - refresh table
+  - DataTableQuery: use on organizations
+  - organization search and typings
+  - typings
+  - attrs handling fix
+
+## 2025-08-30
+[8] MKIS-1176: PrimeVue datatable
+  - Improvements
+  - accounts resolver and use in DataTableQuery
+  - sub organizations resolver and use in DataTableQuery

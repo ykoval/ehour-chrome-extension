@@ -18,15 +18,27 @@ class EHourTimesheetFiller {
     
     return url.includes('ehour') || 
            url.includes('timesheet') || 
+           url.includes('/eh/') ||
            title.includes('ehour') ||
            document.querySelector('[class*="ehour"]') !== null ||
-           document.querySelector('[id*="timesheet"]') !== null;
+           document.querySelector('[id*="timesheet"]') !== null ||
+           document.querySelector('.timesheetTable') !== null;
   }
 
   init() {
-    // Listen for messages from popup
+    // Listen for messages from popup via Chrome extension messaging
+    chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+      if (request.type === 'EHOUR_AUTOFILL') {
+        console.log('eHour Auto-Fill: Received message from popup', request);
+        this.fillTimesheet(request.data);
+        sendResponse({ success: true });
+      }
+    });
+
+    // Also listen for window messages (backup method)
     window.addEventListener('message', (event) => {
       if (event.data.type === 'EHOUR_AUTOFILL') {
+        console.log('eHour Auto-Fill: Received window message', event.data);
         this.fillTimesheet(event.data.data);
       }
     });
@@ -77,13 +89,31 @@ class EHourTimesheetFiller {
 
       this.showProgress('Filling timesheet entries...');
       
-      // Fill each day's data
-      for (const entry of data) {
-        await this.fillDayEntry(entry, formStructure);
-        await this.delay(500); // Small delay between entries
+      // Group entries by week to minimize navigation
+      const weekGroups = this.groupEntriesByWeek(data);
+      
+      for (const [weekKey, entries] of Object.entries(weekGroups)) {
+        this.showProgress(`Processing week: ${weekKey}...`);
+        
+        // Navigate to the correct week if needed
+        await this.navigateToWeek(entries[0].date);
+        await this.delay(1000); // Wait for page to load
+        
+        // Re-analyze structure after navigation
+        const currentFormStructure = this.analyzeTimesheetStructure();
+        
+        // Fill all entries for this week
+        for (const entry of entries) {
+          await this.fillDayEntry(entry, currentFormStructure);
+          await this.delay(300); // Small delay between entries
+        }
+        
+        // Save the week's data
+        await this.saveWeek();
+        await this.delay(1000); // Wait for save to complete
       }
 
-      this.showProgress('Timesheet filled successfully!', 'success');
+      this.showProgress('All timesheet entries filled successfully!', 'success');
       
     } catch (error) {
       console.error('eHour Auto-Fill Error:', error);
@@ -92,61 +122,59 @@ class EHourTimesheetFiller {
   }
 
   analyzeTimesheetStructure() {
-    // Common eHour selectors and patterns
+    // eHour-specific selectors based on actual HTML structure
     const selectors = {
-      // Date inputs
-      dateInputs: [
-        'input[type="date"]',
-        'input[name*="date"]',
-        'input[id*="date"]',
-        '.date-input input'
-      ],
-      
-      // Hour inputs
+      // Hour inputs - these are the main timesheet input fields
       hourInputs: [
-        'input[type="number"]',
-        'input[name*="hour"]',
-        'input[id*="hour"]',
-        'input[name*="time"]',
-        '.hours input',
-        '.time-input input'
+        'input[name*="day:day"]',  // Main pattern: blueFrame:blueFrame_body:customers:0:rows:1:days:0:day:day
+        'input[tabindex="1"]',     // All hour inputs have tabindex="1"
+        '.timesheetTable input[type="text"]'
       ],
       
-      // Description/Comment fields
-      descriptionInputs: [
-        'textarea[name*="comment"]',
-        'textarea[name*="description"]',
-        'input[name*="comment"]',
-        'input[name*="description"]',
-        '.comment textarea',
-        '.description textarea'
+      // Weekly comment field
+      weeklyCommentInputs: [
+        'textarea[name*="commentsArea"]',
+        'textarea.timesheetTextarea',
+        'textarea[placeholder="Comments"]'
       ],
       
-      // Project selectors
-      projectSelectors: [
-        'select[name*="project"]',
-        'select[id*="project"]',
-        '.project select'
+      // Day comment links (pencil icons)
+      dayCommentLinks: [
+        'a[href="javascript:;"] i.fa-pencil',
+        '.iconLink',
+        '.iconLinkOn'
       ],
       
-      // Add/Submit buttons
+      // Submit buttons
       submitButtons: [
-        'button[type="submit"]',
-        'input[type="submit"]',
-        'button[name*="save"]',
-        'button[id*="save"]',
-        '.save-button',
-        '.submit-button'
+        'a[name="submitButton"]',
+        'a[name*="submitButtonTop"]',
+        'a.button.store',
+        '#submit',
+        '#submitButtonTop'
+      ],
+      
+      // Project rows for targeting specific projects
+      projectRows: [
+        '.projectRow',
+        'tr.projectRow'
+      ],
+      
+      // Project codes for identification
+      projectCodes: [
+        '.projectCode span',
+        '.projectCodeFilter'
       ]
     };
 
     const structure = {
       detected: false,
-      dateFields: [],
       hourFields: [],
-      descriptionFields: [],
-      projectFields: [],
-      submitButtons: []
+      weeklyCommentFields: [],
+      dayCommentLinks: [],
+      submitButtons: [],
+      projectRows: [],
+      projectCodes: []
     };
 
     // Find matching elements
@@ -154,7 +182,7 @@ class EHourTimesheetFiller {
       for (const selector of selectorList) {
         const elements = document.querySelectorAll(selector);
         if (elements.length > 0) {
-          const fieldName = type.replace('s', 'Fields');
+          const fieldName = type.replace(/s$/, 'Fields').replace('Inputs', 'Fields').replace('Links', 'Links').replace('Buttons', 'Buttons').replace('Rows', 'Rows').replace('Codes', 'Codes');
           structure[fieldName] = Array.from(elements);
           structure.detected = true;
         }
@@ -166,74 +194,86 @@ class EHourTimesheetFiller {
   }
 
   async fillDayEntry(entry, formStructure) {
-    const { date, hours, description, tasks } = entry;
+    const { date, hours, description, tasks, subtasks } = entry;
     
     console.log(`eHour Auto-Fill: Filling entry for ${date}`);
 
-    // Try to find or create a row for this date
-    const row = await this.findOrCreateDateRow(date, formStructure);
-    
-    if (!row) {
-      console.warn(`Could not find/create row for date: ${date}`);
+    // Find the MKIS project row (since that's what we're working with)
+    const mkisRow = this.findMKISProjectRow();
+    if (!mkisRow) {
+      console.warn('Could not find MKIS project row');
       return;
     }
 
-    // Fill hours
-    const hourField = row.querySelector('input[type="number"], input[name*="hour"]');
-    if (hourField) {
-      this.fillField(hourField, hours.toString());
+    // Find the day column that matches our date
+    const dayIndex = this.getDayIndexFromDate(date);
+    if (dayIndex === -1) {
+      console.warn(`Could not determine day index for date: ${date}`);
+      return;
     }
 
-    // Fill description
-    const descField = row.querySelector('textarea, input[name*="comment"], input[name*="description"]');
-    if (descField) {
-      // Create a concise description from tasks
-      const taskSummary = tasks.length > 0 ? tasks.join(', ') : 'Development work';
-      const shortDescription = `${taskSummary} - ${description.substring(0, 100)}...`;
-      this.fillField(descField, shortDescription);
+    // Fill hours in the appropriate day column
+    const hourInput = mkisRow.querySelector(`input[name*="days:${dayIndex}:day:day"]`);
+    if (hourInput) {
+      this.fillField(hourInput, hours.toString());
+      console.log(`Filled ${hours} hours for ${date} in MKIS project`);
+    } else {
+      console.warn(`Could not find hour input for day ${dayIndex}`);
     }
 
-    // If there's a project selector, try to select a relevant project
-    const projectField = row.querySelector('select[name*="project"]');
-    if (projectField && tasks.length > 0) {
-      this.selectProject(projectField, tasks[0]); // Use first task as project hint
+    // Build complete description with subtasks
+    let fullDescription = `[${hours}] ${description}`;
+    if (subtasks && subtasks.length > 0) {
+      const subtaskText = subtasks.map(subtask => `  - ${subtask}`).join('\n');
+      fullDescription += '\n' + subtaskText;
+    }
+
+    // Fill day-specific comment via pencil icon modal
+    await this.fillDayComment(mkisRow, dayIndex, fullDescription, date);
+
+    // Add description to weekly comments if it's the first entry
+    if (formStructure.weeklyCommentFields.length > 0) {
+      const commentField = formStructure.weeklyCommentFields[0];
+      const existingComment = commentField.value;
+      const newComment = tasks.length > 0 ? tasks.join(', ') + ': ' + description : description;
+      
+      if (!existingComment.includes(newComment.substring(0, 50))) {
+        const updatedComment = existingComment ? existingComment + '\n' + newComment : newComment;
+        this.fillField(commentField, updatedComment);
+      }
     }
   }
 
-  async findOrCreateDateRow(targetDate, formStructure) {
-    // First, try to find existing row with this date
-    const dateFields = document.querySelectorAll('input[type="date"], input[name*="date"]');
+  findMKISProjectRow() {
+    // Look for project rows and find the one with MKIS
+    const projectRows = document.querySelectorAll('.projectRow');
     
-    for (const dateField of dateFields) {
-      if (dateField.value === targetDate) {
-        return dateField.closest('tr, .row, .entry, form');
+    for (const row of projectRows) {
+      const projectCodeElement = row.querySelector('.projectCodeFilter');
+      if (projectCodeElement && projectCodeElement.textContent.trim() === 'MKIS') {
+        return row;
       }
     }
-
-    // If not found, try to find an empty row and set the date
-    for (const dateField of dateFields) {
-      if (!dateField.value || dateField.value === '') {
-        this.fillField(dateField, targetDate);
-        return dateField.closest('tr, .row, .entry, form');
-      }
-    }
-
-    // If still not found, try to add a new row (if there's an "Add" button)
-    const addButton = document.querySelector('button[id*="add"], button[name*="add"], .add-button');
-    if (addButton) {
-      addButton.click();
-      await this.delay(1000); // Wait for new row to appear
-      
-      // Try to find the newly created row
-      const newDateFields = document.querySelectorAll('input[type="date"], input[name*="date"]');
-      const lastDateField = newDateFields[newDateFields.length - 1];
-      if (lastDateField && !lastDateField.value) {
-        this.fillField(lastDateField, targetDate);
-        return lastDateField.closest('tr, .row, .entry, form');
-      }
-    }
-
+    
     return null;
+  }
+
+  getDayIndexFromDate(dateString) {
+    // Parse the date (format: 2025-08-01)
+    const targetDate = new Date(dateString);
+    const targetDay = targetDate.getDate();
+    
+    // Find the day headers in the timesheet table
+    const dayHeaders = document.querySelectorAll('.timesheetTable .day .date');
+    
+    for (let i = 0; i < dayHeaders.length; i++) {
+      const dayNumber = parseInt(dayHeaders[i].textContent.trim());
+      if (dayNumber === targetDay) {
+        return i;
+      }
+    }
+    
+    return -1; // Day not found in current week
   }
 
   fillField(field, value) {
@@ -247,26 +287,159 @@ class EHourTimesheetFiller {
     // Trigger events to ensure the form recognizes the change
     field.dispatchEvent(new Event('input', { bubbles: true }));
     field.dispatchEvent(new Event('change', { bubbles: true }));
+    field.dispatchEvent(new Event('blur', { bubbles: true }));
     field.blur();
+    
+    // Small delay to ensure the change is processed
+    setTimeout(() => {
+      if (field.value !== value) {
+        field.value = value;
+        field.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+    }, 100);
   }
 
-  selectProject(selectField, taskHint) {
-    // Try to find a project option that matches the task
-    const options = selectField.querySelectorAll('option');
+  // Helper method to check if we're in the correct week for the date
+  isDateInCurrentWeek(dateString) {
+    const targetDate = new Date(dateString);
+    const weekTitle = document.querySelector('h1');
     
-    for (const option of options) {
-      const optionText = option.textContent.toLowerCase();
-      const taskLower = taskHint.toLowerCase();
+    if (!weekTitle) return false;
+    
+    // Extract week dates from title like "Week 31: 28 Jul 2025 - 03 Aug 2025"
+    const weekText = weekTitle.textContent;
+    const dateMatch = weekText.match(/(\d{1,2})\s+(\w{3})\s+(\d{4})\s+-\s+(\d{1,2})\s+(\w{3})\s+(\d{4})/);
+    
+    if (!dateMatch) return false;
+    
+    const startDay = parseInt(dateMatch[1]);
+    const startMonth = this.getMonthNumber(dateMatch[2]);
+    const startYear = parseInt(dateMatch[3]);
+    
+    const endDay = parseInt(dateMatch[4]);
+    const endMonth = this.getMonthNumber(dateMatch[5]);
+    const endYear = parseInt(dateMatch[6]);
+    
+    const weekStart = new Date(startYear, startMonth, startDay);
+    const weekEnd = new Date(endYear, endMonth, endDay);
+    
+    return targetDate >= weekStart && targetDate <= weekEnd;
+  }
+  
+  getMonthNumber(monthAbbr) {
+    const months = {
+      'Jan': 0, 'Feb': 1, 'Mar': 2, 'Apr': 3, 'May': 4, 'Jun': 5,
+      'Jul': 6, 'Aug': 7, 'Sep': 8, 'Oct': 9, 'Nov': 10, 'Dec': 11
+    };
+    return months[monthAbbr] || 0;
+  }
+
+  groupEntriesByWeek(entries) {
+    const weekGroups = {};
+    
+    for (const entry of entries) {
+      const date = new Date(entry.date);
+      // Get the Monday of the week for this date
+      const monday = new Date(date);
+      monday.setDate(date.getDate() - date.getDay() + 1);
       
-      // Look for matches in project names
-      if (optionText.includes('mkis') || 
-          optionText.includes('development') || 
-          optionText.includes('frontend') ||
-          optionText.includes(taskLower.split('-')[0])) {
-        selectField.value = option.value;
-        selectField.dispatchEvent(new Event('change', { bubbles: true }));
-        break;
+      const weekKey = monday.toISOString().split('T')[0];
+      
+      if (!weekGroups[weekKey]) {
+        weekGroups[weekKey] = [];
       }
+      weekGroups[weekKey].push(entry);
+    }
+    
+    return weekGroups;
+  }
+
+  async navigateToWeek(targetDateString) {
+    const targetDate = new Date(targetDateString);
+    
+    // Check if we're already in the correct week
+    if (this.isDateInCurrentWeek(targetDateString)) {
+      console.log('Already in correct week for', targetDateString);
+      return;
+    }
+    
+    console.log('Navigating to week containing', targetDateString);
+    
+    // Find navigation buttons
+    const prevWeekBtn = document.querySelector('a.previousWeek, #id11e');
+    const nextWeekBtn = document.querySelector('a.nextWeek, #id11f');
+    
+    if (!prevWeekBtn || !nextWeekBtn) {
+      console.warn('Could not find week navigation buttons');
+      return;
+    }
+    
+    // Get current week info
+    const currentWeekInfo = this.getCurrentWeekInfo();
+    if (!currentWeekInfo) {
+      console.warn('Could not determine current week');
+      return;
+    }
+    
+    const currentWeekStart = currentWeekInfo.startDate;
+    const targetWeekStart = new Date(targetDate);
+    targetWeekStart.setDate(targetDate.getDate() - targetDate.getDay() + 1);
+    
+    // Calculate how many weeks to navigate
+    const weekDiff = Math.round((targetWeekStart - currentWeekStart) / (7 * 24 * 60 * 60 * 1000));
+    
+    if (weekDiff === 0) {
+      return; // Already in correct week
+    }
+    
+    const button = weekDiff > 0 ? nextWeekBtn : prevWeekBtn;
+    const clicks = Math.abs(weekDiff);
+    
+    for (let i = 0; i < clicks; i++) {
+      button.click();
+      await this.delay(1500); // Wait for navigation to complete
+    }
+  }
+
+  getCurrentWeekInfo() {
+    const weekTitle = document.querySelector('h1');
+    if (!weekTitle) return null;
+    
+    const weekText = weekTitle.textContent;
+    const dateMatch = weekText.match(/(\d{1,2})\s+(\w{3})\s+(\d{4})\s+-\s+(\d{1,2})\s+(\w{3})\s+(\d{4})/);
+    
+    if (!dateMatch) return null;
+    
+    const startDay = parseInt(dateMatch[1]);
+    const startMonth = this.getMonthNumber(dateMatch[2]);
+    const startYear = parseInt(dateMatch[3]);
+    
+    return {
+      startDate: new Date(startYear, startMonth, startDay),
+      weekText: weekText
+    };
+  }
+
+  async saveWeek() {
+    // Find and click the store button
+    const storeButton = document.querySelector('#submit, #submitButtonTop, a[name="submitButton"]');
+    
+    if (storeButton) {
+      console.log('Saving week data...');
+      storeButton.click();
+      
+      // Wait for save to complete
+      await this.delay(2000);
+      
+      // Check for any error messages
+      const errorMsg = document.querySelector('.error, .errorMessage, [class*="error"]');
+      if (errorMsg && errorMsg.textContent.trim()) {
+        console.warn('Save warning/error:', errorMsg.textContent);
+      } else {
+        console.log('Week saved successfully');
+      }
+    } else {
+      console.warn('Could not find store button');
     }
   }
 
@@ -309,6 +482,69 @@ class EHourTimesheetFiller {
         progress.remove();
       }
     }, delay);
+  }
+
+  async fillDayComment(mkisRow, dayIndex, description, date) {
+    try {
+      // Find all day cells and their corresponding option cells in this row
+      const dayCells = mkisRow.querySelectorAll('td:not(.projectCode):not(.project):not(.spacer):not(.total)');
+      let pencilLink = null;
+      
+      // Find the pencil icon for the specific day index
+      // Day cells alternate: day input, options, day input, options, etc.
+      const optionsCellIndex = (dayIndex * 2) + 1; // Options cell is after each day cell
+      
+      if (optionsCellIndex < dayCells.length) {
+        const optionsCell = dayCells[optionsCellIndex];
+        pencilLink = optionsCell.querySelector('a[href="javascript:;"] i.fa-pencil')?.parentElement;
+      }
+      
+      if (!pencilLink) {
+        console.warn(`Could not find pencil icon for day ${dayIndex}`);
+        return;
+      }
+
+      console.log(`Clicking pencil icon for ${date}`);
+      
+      // Click the pencil icon to open the modal
+      pencilLink.click();
+      
+      // Wait for modal to appear
+      await this.delay(1000);
+      
+      // Find the modal textarea
+      const modal = document.querySelector('.wicket-modal');
+      if (!modal || modal.style.visibility !== 'visible') {
+        console.warn('Day comment modal did not open');
+        return;
+      }
+      
+      const textarea = modal.querySelector('textarea.timesheetTextarea');
+      if (!textarea) {
+        console.warn('Could not find textarea in day comment modal');
+        return;
+      }
+      
+      // Fill the textarea with the description
+      this.fillField(textarea, description);
+      console.log(`Filled day comment for ${date}: ${description.substring(0, 50)}...`);
+      
+      // Click OK button to close modal
+      const okButton = modal.querySelector('a.button.floatRight');
+      if (okButton) {
+        await this.delay(500); // Small delay before clicking OK
+        okButton.click();
+        console.log(`Closed day comment modal for ${date}`);
+        
+        // Wait for modal to close
+        await this.delay(1000);
+      } else {
+        console.warn('Could not find OK button in day comment modal');
+      }
+      
+    } catch (error) {
+      console.error(`Error filling day comment for ${date}:`, error);
+    }
   }
 
   delay(ms) {

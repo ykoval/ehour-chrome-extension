@@ -25,7 +25,8 @@ class GitLogParser {
           date: currentDate,
           hours: 0,
           tasks: [],
-          description: ''
+          description: '',
+          subtasks: []
         };
         continue;
       }
@@ -39,6 +40,21 @@ class GitLogParser {
         // Extract MKIS ticket numbers
         const tickets = taskMatch[2].match(/MKIS-\d+/g) || [];
         currentEntry.tasks = tickets;
+        continue;
+      }
+
+      // Match subtask entries: - subtask description
+      const subtaskMatch = line.match(/^\s*-\s*(.+)/);
+      if (subtaskMatch && currentEntry) {
+        currentEntry.subtasks.push(subtaskMatch[1]);
+        continue;
+      }
+
+      // Match additional MKIS tickets without [8]: MKIS-XXX Description
+      const additionalTicketMatch = trimmedLine.match(/^(MKIS-\d+)\s+(.+)/);
+      if (additionalTicketMatch && currentEntry) {
+        const additionalDesc = `${additionalTicketMatch[1]}: ${additionalTicketMatch[2]}`;
+        currentEntry.subtasks.push(additionalDesc);
       }
     }
 
@@ -61,9 +77,16 @@ class GitLogParser {
 
   generatePreview(filteredData) {
     return filteredData.map(entry => {
-      const taskList = entry.tasks.length > 0 ? entry.tasks.join(', ') : 'General work';
-      return `${entry.date}: ${entry.hours}h - ${taskList}`;
-    }).join('\n');
+      // Build complete description with subtasks
+      let fullDescription = entry.description || 'General work';
+      
+      if (entry.subtasks && entry.subtasks.length > 0) {
+        const subtaskText = entry.subtasks.map(subtask => `  - ${subtask}`).join('\n');
+        fullDescription += '\n' + subtaskText;
+      }
+      
+      return `${entry.date}: ${entry.hours}h - ${fullDescription}`;
+    }).join('\n\n');
   }
 }
 
@@ -80,13 +103,21 @@ const statusDiv = document.getElementById('status');
 const parser = new GitLogParser();
 let filteredData = [];
 
-// Set default date range (current month)
+// Set default date range (previous month)
 const now = new Date();
-const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
-const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+const firstDay = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+const lastDay = new Date(now.getFullYear(), now.getMonth(), 0);
 
 startDateInput.value = firstDay.toISOString().split('T')[0];
 endDateInput.value = lastDay.toISOString().split('T')[0];
+
+// Load saved report from local storage
+loadSavedReport();
+
+// Auto-save report text when user types
+gitLogTextarea.addEventListener('input', () => {
+  saveReportToStorage(gitLogTextarea.value);
+});
 
 // Event Listeners
 parseBtn.addEventListener('click', () => {
@@ -148,24 +179,42 @@ fillBtn.addEventListener('click', async () => {
     // Get current active tab
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     
-    if (!tab.url.includes('ehour') && !tab.url.includes('timesheet')) {
+    if (!tab.url.includes('ehour') && !tab.url.includes('timesheet') && !tab.url.includes('/eh/')) {
       showStatus('Please navigate to your eHour timesheet page first.', 'error');
       return;
     }
 
-    // Inject content script to fill the timesheet
-    await chrome.scripting.executeScript({
-      target: { tabId: tab.id },
-      function: fillTimesheetData,
-      args: [filteredData]
-    });
+    // First ensure content script is injected
+    try {
+      await chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        files: ['content.js']
+      });
+    } catch (error) {
+      console.log('Content script may already be injected:', error.message);
+    }
 
-    showStatus('Timesheet filling initiated! Check the eHour page.', 'success');
-    
-    // Close popup after a delay
-    setTimeout(() => {
-      window.close();
-    }, 2000);
+    // Wait a moment for content script to initialize
+    await new Promise(resolve => setTimeout(resolve, 500));
+
+    // Send message to content script
+    try {
+      await chrome.tabs.sendMessage(tab.id, {
+        type: 'EHOUR_AUTOFILL',
+        data: filteredData
+      });
+      
+      showStatus('Timesheet filling initiated! Check the eHour page.', 'success');
+      
+      // Don't close popup immediately - let user see progress
+      setTimeout(() => {
+        window.close();
+      }, 3000);
+      
+    } catch (error) {
+      console.error('Failed to send message to content script:', error);
+      showStatus('Failed to communicate with page. Try refreshing the eHour page.', 'error');
+    }
 
   } catch (error) {
     showStatus(`Error filling timesheet: ${error.message}`, 'error');
@@ -183,6 +232,48 @@ function showStatus(message, type) {
   setTimeout(() => {
     statusDiv.style.display = 'none';
   }, 5000);
+}
+
+// Function that will be injected into the page
+// Function to save report to local storage
+function saveReportToStorage(reportText) {
+  chrome.storage.local.set({ 
+    savedReport: reportText,
+    lastSaved: Date.now()
+  });
+}
+
+// Function to load saved report from local storage
+async function loadSavedReport() {
+  try {
+    const result = await chrome.storage.local.get(['savedReport', 'lastSaved']);
+    if (result.savedReport) {
+      gitLogTextarea.value = result.savedReport;
+      
+      // Show when it was last saved
+      if (result.lastSaved) {
+        const lastSaved = new Date(result.lastSaved);
+        const timeAgo = getTimeAgo(lastSaved);
+        showStatus(`Restored saved report (${timeAgo})`, 'info');
+      }
+    }
+  } catch (error) {
+    console.error('Error loading saved report:', error);
+  }
+}
+
+// Helper function to show time ago
+function getTimeAgo(date) {
+  const now = new Date();
+  const diffMs = now - date;
+  const diffMins = Math.floor(diffMs / (1000 * 60));
+  const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  
+  if (diffMins < 1) return 'just now';
+  if (diffMins < 60) return `${diffMins}m ago`;
+  if (diffHours < 24) return `${diffHours}h ago`;
+  return `${diffDays}d ago`;
 }
 
 // Function that will be injected into the page

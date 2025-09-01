@@ -8,22 +8,22 @@
       padding: 20px;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     }
-    
+
     .header {
       text-align: center;
       margin-bottom: 20px;
     }
-    
+
     .section {
       margin-bottom: 15px;
     }
-    
+
     label {
       display: block;
       margin-bottom: 5px;
       font-weight: 500;
     }
-    
+
     textarea {
       width: 100%;
       height: 120px;
@@ -34,23 +34,23 @@
       font-size: 12px;
       resize: vertical;
     }
-    
+
     input[type="date"] {
       width: 100%;
       padding: 8px;
       border: 1px solid #ddd;
       border-radius: 4px;
     }
-    
+
     .date-range {
       display: flex;
       gap: 10px;
     }
-    
+
     .date-range > div {
       flex: 1;
     }
-    
+
     button {
       width: 100%;
       padding: 12px;
@@ -62,38 +62,41 @@
       font-size: 14px;
       font-weight: 500;
     }
-    
+
     button:hover {
       background: #45a049;
     }
-    
+
     button:disabled {
       background: #ccc;
       cursor: not-allowed;
     }
-    
+
     .preview {
-      max-height: 100px;
+      max-height: 150px;
       overflow-y: auto;
       background: #f5f5f5;
-      padding: 8px;
+      padding: 10px;
       border-radius: 4px;
-      font-size: 12px;
+      font-size: 11px;
       margin-top: 10px;
+      line-height: 1.4;
+      white-space: pre-line;
+      font-family: monospace;
     }
-    
+
     .status {
       text-align: center;
       padding: 10px;
       border-radius: 4px;
       margin-top: 10px;
     }
-    
+
     .status.success {
       background: #d4edda;
       color: #155724;
     }
-    
+
     .status.error {
       background: #f8d7da;
       color: #721c24;
@@ -102,9 +105,9 @@
 </head>
 <body>
   <div class="header">
-    <h2>eHour Git Log Auto-Fill</h2>
+    <h2>eHour Git Log Auto-Fill - v1</h2>
   </div>
-  
+
   <div class="section">
     <label for="gitLog">Paste your daily report:</label>
     <textarea id="gitLog" placeholder="## 2025-07-01
@@ -113,7 +116,7 @@
 ## 2025-07-02
 [8] MKIS-885: Target group dictionary..."></textarea>
   </div>
-  
+
   <div class="section">
     <label>Date Range:</label>
     <div class="date-range">
@@ -127,18 +130,18 @@
       </div>
     </div>
   </div>
-  
+
   <div class="section">
     <button id="parseBtn">Parse & Preview</button>
     <div id="preview" class="preview" style="display: none;"></div>
   </div>
-  
+
   <div class="section">
     <button id="fillBtn" disabled>Fill eHour Timesheet</button>
   </div>
-  
+
   <div id="status" class="status" style="display: none;"></div>
-  
+
   <script src="popup.js"></script>
 </body>
 </html>
