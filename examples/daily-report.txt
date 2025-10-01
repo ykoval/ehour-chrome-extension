@@ -1,0 +1,26 @@
+## 2025-09-01
+[8] MKIS-200: FE: User management - Create user table
+  - add GraphQL queries for the user table
+  - rename, refactoring
+
+## 2025-09-02
+[8] MKIS-200: FE: User management - Create user table
+  - add resolvers
+MKIS-201 Settings page
+  - remove the unused add button
+
+## 2025-09-03
+[8] MKIS-202: Upload form
+  - fix the "Save changes" button
+  - keep the form open on validation errors
+  - add a unit test
+Update dependencies
+
+## 2025-09-04
+[8] MKIS-203: Confirmation dialog on tab switch
+  - don't rerender the tab before navigation
+
+## 2025-09-05
+[8] General work
+  - Update README
+  - Fix lint warnings
