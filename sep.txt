@@ -1,0 +1,150 @@
+2025-09-01: MKIS-1177 FE: Public user management - Create User table  - add graphql's for public user management;
+2025-09-01: MKIS-1177 FE: Public user management - Create User table  - rename, refactoring
+2025-09-02: MKIS-1177 FE: Public user management - Create User table  - resolvers added
+2025-09-02: MKIS-1177 FE: Public user management - Create User table  - update types;  - added related permissions; updated PermissionsTestMenu;
+2025-09-02: MKIS-1177 FE: Public user management - Create User table  - added mock response for publicUsers query, with sort, filter, pagination support;
+2025-09-02: MKIS-1177 FE: Public user management - Create User table  - removed reduntant columns in template
+2025-09-02: MKIS-1177 FE: Public user management - Create User table  - added publicUser list and entity pages with routes and resolver usage;  - entity page progress: added types and schema;  - list page progress: added table;
+2025-09-02: MKIS-1177 FE: Public user management - Create User table  - list: name, org name columns data bind;
+2025-09-03: MKIS-1177 FE: Public user management - Create User table  - DataTable: added emptyMessage default;
+2025-09-03: MKIS-1177 FE: Public user management - Create User table  - columns: bind data, add translations, css classes;
+2025-09-03: MKIS-1177 FE: Public user management - Create User table  - columns: status using pv Tag and TagCell added;
+2025-09-03: MKIS-1177 FE: Public user management - Create User table  - table font size;  - TextIconCell added for email and organization;
+2025-09-04: MKIS-1177 FE: Public user management - Create User table  - tooltip for verified/not verified with icon and translations;
+2025-09-04: MKIS-1177 FE: Public user management - Create User table  - cleanup mocks; align with api schema latest changes;  - accs/orgs use search input;
+2025-09-04: MKIS-1177 FE: Public user management - Create User table  - cleanup
+2025-09-04: MKIS-730 Update Role schema for users and organisations  - upd schema: role changes with translations;
+2025-09-04: Merge branch 'develop' into MKIS-1177-FE-Public-user-management-Create-User-table
+2025-09-04: MKIS-1178 FE: Public user management - Public User edit form  - edit form progress;
+2025-09-04: MKIS-1178 FE: Public user management - Public User edit form  - add form submit buttons;
+2025-09-05: MKIS-1178 FE: Public user management - Public User edit form  - fix create submit
+2025-09-05: MKIS-1209 FE: Implement changes for ONV  - place required filter params;  - add check for 'admin add' permission on organization creation;
+2025-09-05: MKIS-1209 FE: Implement changes for ONV  - fix subOrganizations query (organizations -> subOrganizations) and resolver;
+2025-09-05: MKIS-1209 FE: Implement changes for ONV  - move to common organizationFilterQueryConfig;
+2025-09-05: Merge branch 'MKIS-1209-FE-Implement-changes-for-ONV' into 'develop'
+2025-09-05: MKIS-1209 FE: Implement changes for ONV  - roles: AccountManagementRead -> AccountRead  There are 2 backend features: ACCOUNT_READ and ACCOUNT_MANAGEMENT_READ  These filter users by their own organization OR sub-organizations
+2025-09-05: Merge branch 'MKIS-1209-FE-Implement-changes-for-ONV' into 'develop'
+2025-09-05: MKIS-1178 FE: Public user management - Public User edit form  - fix doubled fields
+2025-09-06: MKIS-1192 Fixes  - updated EduInput -> InputText  - openDialog 'data: {}' added;
+2025-09-07: Merge branch 'develop' into MKIS-1177-FE-Public-user-management-Create-User-table
+2025-09-07: MKIS-1177 FE: Public user management - Create User table  - migrate change email confirmation
+2025-09-08: MKIS-1217 New organization doesnʼt appear in the organizations list immediately after creation MKIS-1220 New user doesnʼt appear in the accounts list immediately after creation
+2025-09-08: Merge branch 'develop' into MKIS-1177-FE-Public-user-management-Create-User-table
+2025-09-08: Merge branch 'refs/heads/develop' into MKIS-1177-FE-Public-user-management-Create-User-table
+2025-09-08: MKIS-1177 FE: Public user management - Create User table  - complete action items menu;  - delete public user flow with confirmation dialog;
+2025-09-08: MKIS-1177 FE: Public user management - Create User table  - adjustments for review comments;
+2025-09-08: MKIS-1178 FE: Public user management - Public User edit form  - wrapper component for PV Tag with data-test attr;
+2025-09-08: MKIS-1178 FE: Public user management - Public User edit form  - DateCell
+2025-09-08: MKIS-1178 FE: Public user management - Public User edit form  - TextIconCell.vue - text prop and typings;
+2025-09-08: Merge branch 'MKIS-1177-FE-Public-user-management-Create-User-table' into 'develop'
+2025-09-09: MKIS-1178 FE: Public user management - Public User edit form  - fix import and build
+2025-09-09: Merge branch 'MKIS-1178-FE-Public-user-management-Public-User-edit-form' into 'develop'
+2025-09-09: MKIS-1178 FE: Public user management - Public User edit form  - place organization field control;
+2025-09-10: Merge branch 'develop' into MKIS-1178-FE-Public-user-management-Public-User-edit-form
+2025-09-10: MKIS-1178 FE: Public user management - Public User edit form  - place role field control;
+2025-09-10: Merge branch 'MKIS-1178-FE-Public-user-management-Public-User-edit-form' into 'develop'
+2025-09-10: MKIS-1178 FE: Public user management - Public User edit form  - place sorting on email, status;  - fix required field on role select;
+2025-09-10: MKIS-1178 FE: Public user management - Public User edit form   - fix organization preselect on edit existing;
+2025-09-10: MKIS-1178 FE: Public user management - Public User edit form   - show email verified and document signed;   - disable paginator border in datatable;
+2025-09-10: Merge branch 'develop' into MKIS-1178-FE-Public-user-management-Public-User-edit-form
+2025-09-10: MKIS-1209 FE: Implement changes for ONV  - re-enable additional query params
+2025-09-10: Merge branch 'develop' into MKIS-1209-FE-Implement-changes-for-ONV-(2)
+2025-09-10: Merge remote-tracking branch 'origin/MKIS-1209-FE-Implement-changes-for-ONV-(2)' into MKIS-1209-FE-Implement-changes-for-ONV-(2)
+2025-08-20: MKIS-1151 Confirmation modal on tab switch  - don't rerender tab before navigation (prevent two events for single navigation)
+2025-09-10: MKIS-1209 FE: Implement changes for ONV  - re-enable additional query params
+2025-09-10: Merge branch 'MKIS-1209-FE-Implement-changes-for-ONV-(2)' into 'develop'
+2025-09-10: Merge branch 'MKIS-1178-FE-Public-user-management-Public-User-edit-form' into 'develop'
+2025-09-10: MKIS-1209 FE: Implement changes for ONV  - fix datatable ChipsCell
+2025-09-10: MKIS-1209 FE: Implement changes for ONV  - fix datatable ChipsCell styling
+2025-09-10: Merge branch 'MKIS-1209-FE-TableChipCell-fixes' into 'develop'
+2025-08-20: MKIS-1151 Confirmation modal on tab switch  - don't rerender tab before navigation (prevent two events for single navigation)
+2025-09-11: MKIS-1179 FE: Public user management - Context menu  - add disabled activate/deactivate, resend invitation and change email action items;
+2025-09-11: Merge branch 'MKIS-1178-FE-Public-user-management-Public-User-edit-form' into 'develop'
+2025-09-11: MKIS-1179 FE: Public user management - Context menu  - added: email verified, document signed, comment, AGB accepted, newsletter Accepted;
+2025-09-11: Merge branch 'MKIS-1178-FE-Public-user-management-Public-User-edit-form' into 'develop'
+2025-09-12: MKIS-1179 FE: Public user management - Context menu  - hide fields not relevant fro create;
+2025-09-12: Merge branch 'MKIS-1178-FE-Public-user-management-Public-User-edit-form' into 'develop'
+2025-09-12: MKIS-1178 FE: Public user management - Public User edit form   - add createdAt, updatedAt
+2025-09-12: Merge branch 'MKIS-1178-FE-Public-user-management-Public-User-edit-form' into 'develop'
+2025-09-12: MKIS-1209 FE: Implement changes for ONV - ChipList: tooltip added for chip with ellipsis;
+2025-09-12: Merge branch 'MKIS-1209-FE-Implement-changes-for-ONV-datatable-ChipList' into 'develop'
+2025-09-12: MKIS-1178 FE: Public user management - Public User edit form   - email verified status shown with Tag (and corresponding icon, severity);   - for auditing timestamps use labeled text instead of DataPickers;
+2025-09-12: MKIS-1178 FE: Public user management - Public User edit form   - email verified status shown with Tag (and corresponding icon, severity);   - for auditing timestamps use labeled text instead of DataPickers;
+2025-09-12: MKIS-1178 FE: Public user management - Public User edit form   - fix severity by boolean
+2025-09-12: Merge branch 'MKIS-1178-FE-Public-user-management-Public-User-edit-form' into 'develop'
+2025-09-15: MKIS-1178 FE: Public user management - Public User edit form   - add breadcrumb, and necessary routes nesting;
+2025-09-15: Merge branch 'MKIS-1178-FE-Public-user-management-Public-User-edit-form' into 'develop'
+2025-09-15: MKIS-1178 FE: Public user management - Public User edit form   - place created/updated by;   - component for LabelValue.vue;
+2025-09-15: Merge branch 'MKIS-1178-FE-Public-user-management-Public-User-edit-form' into 'develop'
+2025-09-15: MKIS-1178 FE: Public user management - Public User edit form   - table organization type translation;   - search placeholder translations;
+2025-09-15: Merge branch 'MKIS-1178-FE-Public-user-management-Public-User-edit-form' into 'develop'
+2025-09-15: MKIS-1178 FE: Public user management - Public User edit form   - fix json translations;
+2025-09-15: Merge branch 'MKIS-1178-FE-Public-user-management-Public-User-edit-form' into 'develop'
+2025-09-16: MKIS-1151 Missing confirmation modal on tab switch without saving data  - add forceLeave handling and LeavePageConfirmation callback on other tab affected forms;
+2025-09-16: MKIS-1151 Missing confirmation modal on tab switch without saving data  - add forceLeave handling and LeavePageConfirmation callback on other tab affected forms;
+2025-09-16: MKIS-1151 Missing confirmation modal on tab switch without saving data  - build fix
+2025-09-16: Merge branch 'MKIS-1151-Missing-confirmation-modal-on-tab-switch-without-saving-data' into 'develop'
+2025-09-16: MKIS-1151 Missing confirmation modal on tab switch without saving data  - initial for organization;
+2025-09-16: Merge branch 'MKIS-1151-Missing-confirmation-modal-on-tab-switch-without-saving-data' into 'develop'
+2025-09-16: MKIS-1151 Missing confirmation modal on tab switch without saving data  - initial for organization;
+2025-09-16: Merge branch 'MKIS-1151-Missing-confirmation-modal-on-tab-switch-without-saving-data' into 'develop'
+2025-09-16: MKIS-1193 FE: Public user table intaraction. Sorting and search  - Date columns (e.g., "Verified on", "Last activity") sortable
+2025-09-16: Merge branch 'MKIS-1108-AM-Back-Office-User-table-interactions' into 'develop'
+2025-09-17: MKIS-1194 FE: Public user table intaraction. Filtering  - initial filters: org, doc signed, date filter;
+2025-09-17: MKIS-1194 FE: Public user table intaraction. Filtering  - define filters better;
+2025-09-17: MKIS-1194 FE: Public user table intaraction. Filtering  - compound filters model;
+2025-09-17: Merge branch 'develop' into MKIS-1194-FE-Public-user-table-intaraction-Filtering-(2)
+2025-09-17: MKIS-1194 FE: Public user table intaraction. Filtering  - use primevue datatable filters on accounts;
+2025-09-17: Merge branch 'develop' into MKIS-1194-FE-Public-user-table-intaraction-Filtering-(2)
+2025-09-18: MKIS-1178 Public user management - Edit form  - remove Organization select duplicated error message;  - fix validation not shown for organization field;  - table: show borders;
+2025-09-18: Merge branch 'MKIS-1178-FE-Public-user-management-edit-form' into 'develop'
+2025-09-18: MKIS-1178 Public user management - Edit form  - build fix
+2025-09-18: Merge branch 'MKIS-1178-FE-Public-user-management-edit-form' into 'develop'
+2025-09-18: MKIS-1178 Public user management - Edit form  - fix the validation error message for the Email field;
+2025-09-18: MKIS-1178 Public user management - Edit form  - notication translations;  - comment field length validation 1000 -> 500;
+2025-09-18: Merge branch 'MKIS-1178-FE-Public-user-management-edit-form' into 'develop'
+2025-09-19: Merge branch 'develop' into MKIS-1194-FE-Public-user-table-intaraction-Filtering-(2)
+2025-09-19: Merge branch 'develop' into MKIS-1194-FE-Public-user-table-intaraction-Filtering-(2)
+2025-09-19: MKIS-1178 FE: Public user management - Public User edit form  - fix: submit selected organizationId on edit;
+2025-09-19: Merge branch 'MKIS-1178-FE-Public-user-management-edit-form' into 'develop'
+2025-09-19: MKIS-1178 FE: Public user management - Public User edit form  - fix: don't submit selected organizationId on edit, disable organization select;
+2025-09-19: Merge branch 'MKIS-1178-FE-Public-user-management-edit-form' into 'develop'
+2025-09-19: Merge branch 'develop' into MKIS-1194-FE-Public-user-table-intaraction-Filtering-(2)
+2025-09-19: MKIS-1194 FE: Public user table intaraction. Filtering  - refactor account filters; define filter component in column definition and output through template;  - same approach for public user table;
+2025-09-20: MKIS-1194 FE: Public user table intaraction. Filtering  - accounts: remove legacy filter row;  - fix organizations filter clear, reset;
+2025-09-20: MKIS-1194 FE: Public user table intaraction. Filtering  - organizations: replace legacy filter row with PV column filters;
+2025-09-20: Merge branch 'develop' into MKIS-1194-FE-Public-user-table-intaraction-Filtering-(2)
+2025-09-20: MKIS-1256 User and Organization management sync between BO and Mediatek  - revert uncompleted work on public user management filters;
+2025-09-20: MKIS-1256 User and Organization management sync between BO and Mediatek  - revert uncompleted work on public user management filters;
+2025-09-20: MKIS-1256 User and Organization management sync between BO and Mediatek  - revert uncompleted work on public user management filters;
+2025-09-22: MKIS-1256 User and Organization management sync between BO and Mediatek  - reapply missed during merge;
+2025-09-22: Merge branch 'MKIS-1194-FE-Public-user-table-intaraction-Filtering' into 'develop'
+2025-09-23: MKIS-1308 Add Newsletter/T&C acceptance fields to Create Account Form  - enable documentChecked, newsLettersAccepted, termsAccepted;  - output documentCheckedAt with placeholder;
+2025-09-23: Merge branch 'MKIS-1308-Add-Newsletter-T&C-acceptance-fields-to-Create-Account-Form' into 'develop'
+2025-09-23: dictionary query updates
+2025-09-23: Merge branch 'grapql-dictionaries-children-add-path' into 'develop'
+2025-09-23: MKIS-1261 The logo updates only after refreshing the page  - call user api refetch after own organization update;
+2025-09-24: MKIS-1307 Organization change in Edit Account form is not saved  - allow change email and organization of existing user
+2025-09-24: Merge branch 'MKIS-1307-Organization-change-in-Edit-Account-form-is-not-saved' into 'develop'
+2025-09-25: MKIS-1178 FE: Public user management  - column filter overlay width
+2025-09-25: Merge branch 'data-table-filter-overlay-style' into 'develop'
+2025-09-25: MKIS-1178 FE: Public user management  - bild fix
+2025-09-25: Merge branch 'data-table-filter-overlay-style' into 'develop'
+2025-09-29: MKIS-958 PrimeVue migration: use PrimeVue forms  - attempt #1
+2025-09-29: Merge branch 'develop' into MKIS-1234-Org-Admin-LMZ-403
+2025-09-29: MKIS-1234 Organization Admin LMZ should get 403  - fix: accessing directly /administration/account with AccountRead permission - tab content not shown
+2025-09-29: MKIS-1234 Organization Admin LMZ should get 403  - rename
+2025-09-29: Merge branch 'Routing' into 'develop'
+2025-09-29: MKIS-1234 Organization Admin LMZ should get 403  - fix routing for dictionary tab;
+2025-09-29: Merge branch 'MKIS-1234-Org-Admin-LMZ-403' into 'develop'
+2025-09-29: MKIS-958 PrimeVue migration: use PrimeVue forms  - add usePrimeVueForm composable in utils library
+2025-09-29: MKIS-1328 Add Dictionaries Pagination  - add same pagination as in ListView.vue
+2025-09-30: MKIS-1328 Add Dictionaries Pagination  - fix dictionary content refreshing on page/dictionary
+2025-09-30: MKIS-1328 Add Dictionaries Pagination  - update
+2025-09-30: Merge branch 'develop' into MKIS-958-PrimeVue-migration-use-PrimeVue-forms
+2025-09-30: MKIS-958 PrimeVue migration: use PrimeVue forms  - profile form using PrimeVue forms api
+2025-09-30: Merge branch 'develop' into MKIS-1328-1-Add-Dictionaries-Pagination
+2025-09-30: MKIS-1328 Add Dictionaries Pagination  - replace legacy EduPagination with PrimeVue Paginator
+2025-09-30: Merge branch 'MKIS-1328-1-Add-Dictionaries-Pagination' into 'develop'
+2025-09-30: Merge branch 'develop' into MKIS-958-PrimeVue-migration-use-PrimeVue-forms
+2025-09-30: MKIS-958 PrimeVue migration: use PrimeVue forms  - own organization edit, OrganizationForm.vue migrated to usePrimeVueForm

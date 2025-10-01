@@ -1,5 +1,149 @@
 // eHour Git Log Auto-Fill - Popup Script
 
+class RawGitLogReformatter {
+  reformatGitLog(rawText) {
+    const lines = rawText.split('\n').filter(line => line.trim());
+    
+    // Group entries by date
+    const dateGroups = {};
+    
+    lines.forEach(line => {
+      const match = line.match(/^(\d{4}-\d{2}-\d{2}):\s*(.+)$/);
+      if (match) {
+        const [, date, commit] = match;
+        
+        // Skip merge commits (all variations)
+        if (commit.match(/^Merge (branch|remote-tracking branch)/i)) {
+          return;
+        }
+        
+        if (!dateGroups[date]) {
+          dateGroups[date] = [];
+        }
+        dateGroups[date].push(commit);
+      }
+    });
+    
+    // Process each date group
+    const output = [];
+    
+    Object.keys(dateGroups).sort().forEach(date => {
+      const commits = dateGroups[date];
+      
+      // Group commits by MKIS ticket
+      const ticketGroups = {};
+      const nonTicketCommits = [];
+      
+      commits.forEach(commit => {
+        // Match MKIS ticket at the start
+        const ticketMatch = commit.match(/^(MKIS-\d+)/);
+        if (ticketMatch) {
+          const ticketId = ticketMatch[1];
+          const restOfCommit = commit.substring(ticketId.length).trim();
+          
+          if (!ticketGroups[ticketId]) {
+            ticketGroups[ticketId] = {
+              mainTitle: '',
+              subtasks: [],
+              titleParts: new Set()
+            };
+          }
+          
+          // Parse the description after ticket ID
+          let description = restOfCommit.replace(/^[-:\s]+/, '');
+          
+          if (description.includes(' - ')) {
+            const parts = description.split(' - ').map(p => p.trim().replace(/;$/, ''));
+            
+            let mainTitle = parts[0];
+            let subtaskStartIndex = 1;
+            
+            // Check if second part is a feature/component name
+            let hasFeatureName = false;
+            if (parts.length > 1) {
+              const secondPart = parts[1];
+              const startsWithActionVerb = /^(add|fix|update|remove|delete|place|use|enable|disable|migrate|refactor|cleanup|rename|show|hide|set|implement|improve|revert|replace|move|output|call|upd|initial|build)/i.test(secondPart);
+              
+              if (!startsWithActionVerb && secondPart[0] === secondPart[0].toUpperCase()) {
+                mainTitle = `${parts[0]} - ${secondPart}`;
+                subtaskStartIndex = 2;
+                hasFeatureName = true;
+                ticketGroups[ticketId].titleParts.add(secondPart.toLowerCase());
+              }
+            }
+            
+            // Set main title - prefer titles with feature names
+            const currentHasFeature = ticketGroups[ticketId].mainTitle.includes(' - ');
+            if (!ticketGroups[ticketId].mainTitle || 
+                (hasFeatureName && !currentHasFeature) ||
+                (hasFeatureName === currentHasFeature && ticketGroups[ticketId].mainTitle.length < mainTitle.length)) {
+              ticketGroups[ticketId].mainTitle = mainTitle;
+            }
+            
+            // Add remaining parts as subtasks
+            parts.slice(subtaskStartIndex).forEach(subtask => {
+              const lowerSubtask = subtask.toLowerCase();
+              if (subtask && 
+                  !ticketGroups[ticketId].subtasks.includes(subtask) &&
+                  !ticketGroups[ticketId].titleParts.has(lowerSubtask)) {
+                ticketGroups[ticketId].subtasks.push(subtask);
+              }
+            });
+          } else if (description) {
+            if (!ticketGroups[ticketId].mainTitle || ticketGroups[ticketId].mainTitle.length < description.length) {
+              ticketGroups[ticketId].mainTitle = description;
+            }
+          }
+        } else {
+          nonTicketCommits.push(commit);
+        }
+      });
+      
+      // Generate output for this date
+      output.push(`## ${date}`);
+      
+      const ticketIds = Object.keys(ticketGroups).sort();
+      
+      if (ticketIds.length > 0) {
+        // First ticket with [8] hours
+        const firstTicket = ticketIds[0];
+        const firstGroup = ticketGroups[firstTicket];
+        output.push(`[8] ${firstTicket}: ${firstGroup.mainTitle}`);
+        
+        firstGroup.subtasks.forEach(subtask => {
+          output.push(`  - ${subtask}`);
+        });
+        
+        // Add remaining tickets
+        ticketIds.slice(1).forEach(ticketId => {
+          const group = ticketGroups[ticketId];
+          output.push(`${ticketId} ${group.mainTitle}`);
+          
+          group.subtasks.forEach(subtask => {
+            output.push(`  - ${subtask}`);
+          });
+        });
+        
+        // Add non-ticket commits at the end
+        if (nonTicketCommits.length > 0) {
+          nonTicketCommits.forEach(commit => {
+            output.push(commit);
+          });
+        }
+      } else {
+        output.push(`[8] General work`);
+        nonTicketCommits.forEach(commit => {
+          output.push(`  - ${commit}`);
+        });
+      }
+      
+      output.push('');
+    });
+    
+    return output.join('\n');
+  }
+}
+
 class GitLogParser {
   constructor() {
     this.parsedData = [];
@@ -91,7 +235,10 @@ class GitLogParser {
 }
 
 // DOM Elements
+const rawGitLogTextarea = document.getElementById('rawGitLog');
 const gitLogTextarea = document.getElementById('gitLog');
+const copyCmdBtn = document.getElementById('copyCmd');
+const parseRawBtn = document.getElementById('parseRawBtn');
 const startDateInput = document.getElementById('startDate');
 const endDateInput = document.getElementById('endDate');
 const parseBtn = document.getElementById('parseBtn');
@@ -99,7 +246,8 @@ const fillBtn = document.getElementById('fillBtn');
 const previewDiv = document.getElementById('preview');
 const statusDiv = document.getElementById('status');
 
-// Initialize parser
+// Initialize parsers
+const reformatter = new RawGitLogReformatter();
 const parser = new GitLogParser();
 let filteredData = [];
 
@@ -111,12 +259,53 @@ const lastDay = new Date(now.getFullYear(), now.getMonth(), 0);
 startDateInput.value = firstDay.toISOString().split('T')[0];
 endDateInput.value = lastDay.toISOString().split('T')[0];
 
-// Load saved report from local storage
-loadSavedReport();
+// Load saved data from local storage
+loadSavedData();
 
-// Auto-save report text when user types
+// Auto-save when user types
+rawGitLogTextarea.addEventListener('input', () => {
+  saveToStorage('rawGitLog', rawGitLogTextarea.value);
+});
+
 gitLogTextarea.addEventListener('input', () => {
-  saveReportToStorage(gitLogTextarea.value);
+  saveToStorage('formattedReport', gitLogTextarea.value);
+});
+
+// Copy command button
+copyCmdBtn.addEventListener('click', async () => {
+  const command = document.getElementById('gitCommand').textContent;
+  try {
+    await navigator.clipboard.writeText(command);
+    showStatus('Command copied to clipboard!', 'success');
+  } catch (error) {
+    showStatus('Failed to copy command', 'error');
+  }
+});
+
+// Parse raw git log button
+parseRawBtn.addEventListener('click', () => {
+  const rawText = rawGitLogTextarea.value.trim();
+  
+  if (!rawText) {
+    showStatus('Please paste raw git log first.', 'error');
+    return;
+  }
+
+  try {
+    const reformatted = reformatter.reformatGitLog(rawText);
+    
+    // Populate the formatted report field
+    gitLogTextarea.value = reformatted;
+    saveToStorage('formattedReport', reformatted);
+    
+    // Extract and set date range from parsed log
+    updateDateRangeFromLog(reformatted);
+    
+    showStatus('Git log parsed successfully!', 'success');
+  } catch (error) {
+    showStatus(`Error parsing git log: ${error.message}`, 'error');
+    console.error('Parse error:', error);
+  }
 });
 
 // Event Listeners
@@ -234,31 +423,38 @@ function showStatus(message, type) {
   }, 5000);
 }
 
-// Function that will be injected into the page
-// Function to save report to local storage
-function saveReportToStorage(reportText) {
-  chrome.storage.local.set({ 
-    savedReport: reportText,
-    lastSaved: Date.now()
-  });
+// Function to save to local storage
+function saveToStorage(key, value) {
+  const data = {};
+  data[key] = value;
+  data[`${key}_lastSaved`] = Date.now();
+  chrome.storage.local.set(data);
 }
 
-// Function to load saved report from local storage
-async function loadSavedReport() {
+// Function to load saved data from local storage
+async function loadSavedData() {
   try {
-    const result = await chrome.storage.local.get(['savedReport', 'lastSaved']);
-    if (result.savedReport) {
-      gitLogTextarea.value = result.savedReport;
+    const result = await chrome.storage.local.get([
+      'rawGitLog', 'rawGitLog_lastSaved',
+      'formattedReport', 'formattedReport_lastSaved'
+    ]);
+    
+    if (result.rawGitLog) {
+      rawGitLogTextarea.value = result.rawGitLog;
+    }
+    
+    if (result.formattedReport) {
+      gitLogTextarea.value = result.formattedReport;
       
       // Show when it was last saved
-      if (result.lastSaved) {
-        const lastSaved = new Date(result.lastSaved);
+      if (result.formattedReport_lastSaved) {
+        const lastSaved = new Date(result.formattedReport_lastSaved);
         const timeAgo = getTimeAgo(lastSaved);
-        showStatus(`Restored saved report (${timeAgo})`, 'info');
+        console.log(`Restored saved data (${timeAgo})`);
       }
     }
   } catch (error) {
-    console.error('Error loading saved report:', error);
+    console.error('Error loading saved data:', error);
   }
 }
 
@@ -274,6 +470,28 @@ function getTimeAgo(date) {
   if (diffMins < 60) return `${diffMins}m ago`;
   if (diffHours < 24) return `${diffHours}h ago`;
   return `${diffDays}d ago`;
+}
+
+// Helper function to extract and set date range from parsed log
+function updateDateRangeFromLog(logText) {
+  const dateMatches = logText.match(/^##\s*(\d{4}-\d{2}-\d{2})/gm);
+  
+  if (dateMatches && dateMatches.length > 0) {
+    // Extract dates from matches
+    const dates = dateMatches.map(match => {
+      const dateStr = match.replace(/^##\s*/, '');
+      return dateStr;
+    }).sort();
+    
+    // Set first and last date
+    const firstDate = dates[0];
+    const lastDate = dates[dates.length - 1];
+    
+    startDateInput.value = firstDate;
+    endDateInput.value = lastDate;
+    
+    console.log(`Date range set: ${firstDate} to ${lastDate}`);
+  }
 }
 
 // Function that will be injected into the page

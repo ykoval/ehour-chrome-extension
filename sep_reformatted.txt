@@ -1,0 +1,196 @@
+## 2025-08-20
+[8] MKIS-1151: Confirmation modal on tab switch
+  - don't rerender tab before navigation (prevent two events for single navigation)
+
+## 2025-09-01
+[8] MKIS-1177: FE: Public user management - Create User table
+  - add graphql's for public user management
+  - rename, refactoring
+
+## 2025-09-02
+[8] MKIS-1177: FE: Public user management - Create User table
+  - resolvers added
+  - update types
+  - added related permissions; updated PermissionsTestMenu
+  - added mock response for publicUsers query, with sort, filter, pagination support
+  - removed reduntant columns in template
+  - added publicUser list and entity pages with routes and resolver usage
+  - entity page progress: added types and schema
+  - list page progress: added table
+  - list: name, org name columns data bind
+
+## 2025-09-03
+[8] MKIS-1177: FE: Public user management - Create User table
+  - DataTable: added emptyMessage default
+  - columns: bind data, add translations, css classes
+  - columns: status using pv Tag and TagCell added
+  - table font size
+  - TextIconCell added for email and organization
+
+## 2025-09-04
+[8] MKIS-1177: FE: Public user management - Create User table
+  - tooltip for verified/not verified with icon and translations
+  - cleanup mocks; align with api schema latest changes
+  - accs/orgs use search input
+  - cleanup
+MKIS-1178 FE: Public user management - Public User edit form
+  - edit form progress
+  - add form submit buttons
+MKIS-730 Update Role schema for users and organisations
+  - upd schema: role changes with translations
+
+## 2025-09-05
+[8] MKIS-1178: FE: Public user management - Public User edit form
+  - fix create submit
+  - fix doubled fields
+MKIS-1209 FE: Implement changes for ONV
+  - place required filter params
+  - add check for 'admin add' permission on organization creation
+  - fix subOrganizations query (organizations -> subOrganizations) and resolver
+  - move to common organizationFilterQueryConfig
+  - roles: AccountManagementRead -> AccountRead  There are 2 backend features: ACCOUNT_READ and ACCOUNT_MANAGEMENT_READ  These filter users by their own organization OR sub-organizations
+
+## 2025-09-06
+[8] MKIS-1192: Fixes
+  - updated EduInput -> InputText
+  - openDialog 'data: {}' added
+
+## 2025-09-07
+[8] MKIS-1177: FE: Public user management - Create User table
+  - migrate change email confirmation
+
+## 2025-09-08
+[8] MKIS-1177: FE: Public user management - Create User table
+  - complete action items menu
+  - delete public user flow with confirmation dialog
+  - adjustments for review comments
+MKIS-1178 FE: Public user management - Public User edit form
+  - wrapper component for PV Tag with data-test attr
+  - DateCell
+  - TextIconCell.vue
+  - text prop and typings
+MKIS-1217 New organization doesnʼt appear in the organizations list immediately after creation MKIS-1220 New user doesnʼt appear in the accounts list immediately after creation
+
+## 2025-09-09
+[8] MKIS-1178: FE: Public user management - Public User edit form
+  - fix import and build
+  - place organization field control
+
+## 2025-09-10
+[8] MKIS-1178: FE: Public user management - Public User edit form
+  - place role field control
+  - place sorting on email, status
+  - fix required field on role select
+  - fix organization preselect on edit existing
+  - show email verified and document signed
+  - disable paginator border in datatable
+MKIS-1209 FE: Implement changes for ONV
+  - re-enable additional query params
+  - fix datatable ChipsCell
+  - fix datatable ChipsCell styling
+
+## 2025-09-11
+[8] MKIS-1179: FE: Public user management - Context menu
+  - add disabled activate/deactivate, resend invitation and change email action items
+  - added: email verified, document signed, comment, AGB accepted, newsletter Accepted
+
+## 2025-09-12
+[8] MKIS-1178: FE: Public user management - Public User edit form
+  - add createdAt, updatedAt
+  - email verified status shown with Tag (and corresponding icon, severity)
+  - for auditing timestamps use labeled text instead of DataPickers
+  - fix severity by boolean
+MKIS-1179 FE: Public user management - Context menu
+  - hide fields not relevant fro create
+MKIS-1209 FE: Implement changes for ONV - ChipList: tooltip added for chip with ellipsis
+
+## 2025-09-15
+[8] MKIS-1178: FE: Public user management - Public User edit form
+  - add breadcrumb, and necessary routes nesting
+  - place created/updated by
+  - component for LabelValue.vue
+  - table organization type translation
+  - search placeholder translations
+  - fix json translations
+
+## 2025-09-16
+[8] MKIS-1151: Missing confirmation modal on tab switch without saving data
+  - add forceLeave handling and LeavePageConfirmation callback on other tab affected forms
+  - build fix
+  - initial for organization
+MKIS-1193 FE: Public user table intaraction. Sorting and search - Date columns (e.g., "Verified on", "Last activity") sortable
+
+## 2025-09-17
+[8] MKIS-1194: FE: Public user table intaraction. Filtering
+  - initial filters: org, doc signed, date filter
+  - define filters better
+  - compound filters model
+  - use primevue datatable filters on accounts
+
+## 2025-09-18
+[8] MKIS-1178: Public user management - Edit form
+  - remove Organization select duplicated error message
+  - fix validation not shown for organization field
+  - table: show borders
+  - build fix
+  - fix the validation error message for the Email field
+  - notication translations
+  - comment field length validation 1000 -> 500
+
+## 2025-09-19
+[8] MKIS-1178: FE: Public user management - Public User edit form
+  - fix: submit selected organizationId on edit
+  - fix: don't submit selected organizationId on edit, disable organization select
+MKIS-1194 FE: Public user table intaraction. Filtering
+  - refactor account filters; define filter component in column definition and output through template
+  - same approach for public user table
+
+## 2025-09-20
+[8] MKIS-1194: FE: Public user table intaraction. Filtering
+  - accounts: remove legacy filter row
+  - fix organizations filter clear, reset
+  - organizations: replace legacy filter row with PV column filters
+MKIS-1256 User and Organization management sync between BO and Mediatek
+  - revert uncompleted work on public user management filters
+
+## 2025-09-22
+[8] MKIS-1256: User and Organization management sync between BO and Mediatek
+  - reapply missed during merge
+
+## 2025-09-23
+[8] MKIS-1261: The logo updates only after refreshing the page
+  - call user api refetch after own organization update
+MKIS-1308 Add Newsletter/T&C acceptance fields to Create Account Form
+  - enable documentChecked, newsLettersAccepted, termsAccepted
+  - output documentCheckedAt with placeholder
+dictionary query updates
+
+## 2025-09-24
+[8] MKIS-1307: Organization change in Edit Account form is not saved
+  - allow change email and organization of existing user
+
+## 2025-09-25
+[8] MKIS-1178: FE: Public user management
+  - column filter overlay width
+  - bild fix
+
+## 2025-09-29
+[8] MKIS-1234: Organization Admin LMZ should get 403
+  - fix: accessing directly /administration/account with AccountRead permission
+  - tab content not shown
+  - rename
+  - fix routing for dictionary tab
+MKIS-1328 Add Dictionaries Pagination
+  - add same pagination as in ListView.vue
+MKIS-958 PrimeVue migration: use PrimeVue forms
+  - attempt #1
+  - add usePrimeVueForm composable in utils library
+
+## 2025-09-30
+[8] MKIS-1328: Add Dictionaries Pagination
+  - fix dictionary content refreshing on page/dictionary
+  - update
+  - replace legacy EduPagination with PrimeVue Paginator
+MKIS-958 PrimeVue migration: use PrimeVue forms
+  - profile form using PrimeVue forms api
+  - own organization edit, OrganizationForm.vue migrated to usePrimeVueForm

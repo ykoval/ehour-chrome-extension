@@ -72,6 +72,75 @@
       cursor: not-allowed;
     }
 
+    .secondary-btn {
+      background: #2196F3;
+    }
+
+    .secondary-btn:hover {
+      background: #0b7dda;
+    }
+
+    .command-hint {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #f5f5f5;
+      padding: 8px;
+      border-radius: 4px;
+      margin-bottom: 8px;
+      font-size: 11px;
+    }
+
+    .command-hint code {
+      flex: 1;
+      font-family: monospace;
+      word-break: break-all;
+    }
+
+    .copy-btn {
+      width: auto;
+      padding: 4px 8px;
+      background: #666;
+      font-size: 14px;
+      min-width: 32px;
+    }
+
+    .copy-btn:hover {
+      background: #555;
+    }
+
+    .divider {
+      text-align: center;
+      margin: 20px 0;
+      position: relative;
+    }
+
+    .divider::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: #ddd;
+    }
+
+    .divider span {
+      position: relative;
+      background: white;
+      padding: 0 10px;
+      color: #666;
+      font-size: 12px;
+    }
+
+    textarea[rows="4"] {
+      height: 80px;
+    }
+
+    textarea[rows="8"] {
+      height: 160px;
+    }
+
     .preview {
       max-height: 150px;
       overflow-y: auto;
@@ -105,16 +174,36 @@
 </head>
 <body>
   <div class="header">
-    <h2>eHour Git Log Auto-Fill - v1</h2>
+    <h2>eHour Git Log Auto-Fill - v2</h2>
   </div>
 
+  <!-- Raw Git Log Section -->
   <div class="section">
-    <label for="gitLog">Paste your daily report:</label>
-    <textarea id="gitLog" placeholder="## 2025-07-01
-[8] MKIS-869: Remove the confirmation dialog...
+    <label for="rawGitLog">Raw Git Log:</label>
+    <div class="command-hint">
+      <code id="gitCommand">git log --since="1 month ago" --author="Yuriy Koval" --pretty=format:"%ad: %s" --reverse --date=short</code>
+      <button id="copyCmd" class="copy-btn" title="Copy to clipboard">📋</button>
+    </div>
+    <textarea id="rawGitLog" rows="4" placeholder="2025-09-01: MKIS-1177 FE: Public user management - Create User table..."></textarea>
+    <button id="parseRawBtn" class="secondary-btn">Parse Raw Git Log</button>
+  </div>
 
-## 2025-07-02
-[8] MKIS-885: Target group dictionary..."></textarea>
+  <!-- OR Divider -->
+  <div class="divider">
+    <span>OR paste formatted report directly:</span>
+  </div>
+
+  <!-- Formatted Report Section -->
+  <div class="section">
+    <label for="gitLog">Formatted Daily Report:</label>
+    <textarea id="gitLog" rows="8" placeholder="## 2025-09-01
+[8] MKIS-1177: FE: Public user management - Create User table
+  - add graphql's for public user management
+  - rename, refactoring
+
+## 2025-09-02
+[8] MKIS-1177: FE: Public user management - Create User table
+  - resolvers added"></textarea>
   </div>
 
   <div class="section">

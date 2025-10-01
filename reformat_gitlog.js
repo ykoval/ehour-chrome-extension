@@ -13,8 +13,8 @@ function reformatGitLog(inputFile, outputFile) {
     if (match) {
       const [, date, commit] = match;
       
-      // Skip merge commits
-      if (commit.includes('Merge branch')) {
+      // Skip merge commits (all variations)
+      if (commit.match(/^Merge (branch|remote-tracking branch)/i)) {
         return;
       }
       
@@ -36,42 +36,72 @@ function reformatGitLog(inputFile, outputFile) {
     const nonTicketCommits = [];
     
     commits.forEach(commit => {
-      const ticketMatch = commit.match(/^(MKIS-\d+)(?:-[^:\s]*)?[\s:]*(.+)/);
+      // Match MKIS ticket at the start
+      const ticketMatch = commit.match(/^(MKIS-\d+)/);
       if (ticketMatch) {
-        const [, ticketId, description] = ticketMatch;
+        const ticketId = ticketMatch[1];
+        const restOfCommit = commit.substring(ticketId.length).trim();
         
         if (!ticketGroups[ticketId]) {
           ticketGroups[ticketId] = {
             mainTitle: '',
-            subtasks: []
+            subtasks: [],
+            titleParts: new Set() // Track parts that are in the title
           };
         }
         
-        // Extract main title and subtasks
+        // Parse the description after ticket ID
+        // Format: "MKIS-1234 Main Title - subtask1 - subtask2"
+        let description = restOfCommit.replace(/^[-:\s]+/, ''); // Remove leading :, -, or spaces
+        
         if (description.includes(' - ')) {
-          const parts = description.split(' - ');
-          const mainTitle = parts[0].trim().replace(/^:\s*/, '');
-          const subtasks = parts.slice(1);
+          const parts = description.split(' - ').map(p => p.trim().replace(/;$/, ''));
           
-          if (!ticketGroups[ticketId].mainTitle || ticketGroups[ticketId].mainTitle.length < mainTitle.length) {
+          let mainTitle = parts[0];
+          let subtaskStartIndex = 1;
+          
+          // Check if second part is a feature/component name (should be part of title)
+          // Feature names are capitalized and don't start with action verbs
+          let hasFeatureName = false;
+          if (parts.length > 1) {
+            const secondPart = parts[1];
+            const startsWithActionVerb = /^(add|fix|update|remove|delete|place|use|enable|disable|migrate|refactor|cleanup|rename|show|hide|set|implement|improve|revert|replace|move|output|call|upd|initial|build)/i.test(secondPart);
+            
+            if (!startsWithActionVerb && secondPart[0] === secondPart[0].toUpperCase()) {
+              // Second part is likely a feature/component name, include it in title
+              mainTitle = `${parts[0]} - ${secondPart}`;
+              subtaskStartIndex = 2;
+              hasFeatureName = true;
+              // Track this part so we don't add it as a subtask later
+              ticketGroups[ticketId].titleParts.add(secondPart.toLowerCase());
+            }
+          }
+          
+          // Set main title - prefer titles with feature names, then use longest
+          const currentHasFeature = ticketGroups[ticketId].mainTitle.includes(' - ');
+          if (!ticketGroups[ticketId].mainTitle || 
+              (hasFeatureName && !currentHasFeature) ||
+              (hasFeatureName === currentHasFeature && ticketGroups[ticketId].mainTitle.length < mainTitle.length)) {
             ticketGroups[ticketId].mainTitle = mainTitle;
           }
           
-          subtasks.forEach(subtask => {
-            const cleanSubtask = subtask.trim().replace(/;$/, '');
-            if (cleanSubtask && !ticketGroups[ticketId].subtasks.includes(cleanSubtask)) {
-              ticketGroups[ticketId].subtasks.push(cleanSubtask);
+          // Add remaining parts as subtasks (skip if already in title)
+          parts.slice(subtaskStartIndex).forEach(subtask => {
+            const lowerSubtask = subtask.toLowerCase();
+            if (subtask && 
+                !ticketGroups[ticketId].subtasks.includes(subtask) &&
+                !ticketGroups[ticketId].titleParts.has(lowerSubtask)) {
+              ticketGroups[ticketId].subtasks.push(subtask);
             }
           });
-        } else {
+        } else if (description) {
           // No subtasks, just main description
-          const cleanDesc = description.trim().replace(/^:\s*/, '');
-          if (!ticketGroups[ticketId].mainTitle || ticketGroups[ticketId].mainTitle.length < cleanDesc.length) {
-            ticketGroups[ticketId].mainTitle = cleanDesc;
+          if (!ticketGroups[ticketId].mainTitle || ticketGroups[ticketId].mainTitle.length < description.length) {
+            ticketGroups[ticketId].mainTitle = description;
           }
         }
       } else {
-        // Non-MKIS commits
+        // Non-MKIS commits (general work)
         nonTicketCommits.push(commit);
       }
     });
@@ -87,17 +117,12 @@ function reformatGitLog(inputFile, outputFile) {
       const firstGroup = ticketGroups[firstTicket];
       output.push(`[8] ${firstTicket}: ${firstGroup.mainTitle}`);
       
-      // Add non-ticket commits as subtasks to first ticket
-      nonTicketCommits.forEach(commit => {
-        output.push(`  - ${commit}`);
-      });
-      
       // Add subtasks for first ticket
       firstGroup.subtasks.forEach(subtask => {
         output.push(`  - ${subtask}`);
       });
       
-      // Add remaining tickets
+      // Add remaining tickets (without [8])
       ticketIds.slice(1).forEach(ticketId => {
         const group = ticketGroups[ticketId];
         output.push(`${ticketId} ${group.mainTitle}`);
@@ -107,6 +132,13 @@ function reformatGitLog(inputFile, outputFile) {
           output.push(`  - ${subtask}`);
         });
       });
+      
+      // Add non-ticket commits at the end if any
+      if (nonTicketCommits.length > 0) {
+        nonTicketCommits.forEach(commit => {
+          output.push(commit);
+        });
+      }
     } else {
       // No MKIS tickets, just general work
       output.push(`[8] General work`);
