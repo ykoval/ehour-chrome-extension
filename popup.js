@@ -235,6 +235,7 @@ class GitLogParser {
 }
 
 // DOM Elements
+const gitCommandInput = document.getElementById('gitCommand');
 const rawGitLogTextarea = document.getElementById('rawGitLog');
 const gitLogTextarea = document.getElementById('gitLog');
 const copyCmdBtn = document.getElementById('copyCmd');
@@ -263,6 +264,10 @@ endDateInput.value = lastDay.toISOString().split('T')[0];
 loadSavedData();
 
 // Auto-save when user types
+gitCommandInput.addEventListener('input', () => {
+  saveToStorage('gitCommand', gitCommandInput.value);
+});
+
 rawGitLogTextarea.addEventListener('input', () => {
   saveToStorage('rawGitLog', rawGitLogTextarea.value);
 });
@@ -273,7 +278,7 @@ gitLogTextarea.addEventListener('input', () => {
 
 // Copy command button
 copyCmdBtn.addEventListener('click', async () => {
-  const command = document.getElementById('gitCommand').textContent;
+  const command = document.getElementById('gitCommand').value;
   try {
     await navigator.clipboard.writeText(command);
     showStatus('Command copied to clipboard!', 'success');
@@ -435,9 +440,14 @@ function saveToStorage(key, value) {
 async function loadSavedData() {
   try {
     const result = await chrome.storage.local.get([
+      'gitCommand', 'gitCommand_lastSaved',
       'rawGitLog', 'rawGitLog_lastSaved',
       'formattedReport', 'formattedReport_lastSaved'
     ]);
+    
+    if (result.gitCommand) {
+      gitCommandInput.value = result.gitCommand;
+    }
     
     if (result.rawGitLog) {
       rawGitLogTextarea.value = result.rawGitLog;
