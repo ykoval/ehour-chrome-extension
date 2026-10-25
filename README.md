@@ -1,5 +1,9 @@
 # eHour Git Log Auto-Fill Chrome Extension
 
+> **Archived.** Superseded by [ehour-mcp](https://github.com/ykoval/ehour-mcp): an MCP server that
+> drafts the timesheet from your git log, fills it in a real Chrome over CDP and reads every saved
+> week back to verify it. This extension still works, but it is no longer maintained.
+
 Automatically fill eHour timesheets from parsed git logs. This extension parses your daily development reports and fills your eHour timesheet entries automatically.
 
 ![Extension popup with a sample git log](docs/popup.png)
